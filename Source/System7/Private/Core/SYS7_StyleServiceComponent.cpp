@@ -134,7 +134,6 @@ FSlateFontInfo USYS7_StyleServiceComponent::BuildFont() const
 
     Font.FontObject       = Family.FontObject;
     Font.TypefaceFontName = FName(*Typeface);
-    Font.Size             = FontSizeOverride > 0.0f ? FontSizeOverride : Family.DefaultSize;
     return Font;
 }
 

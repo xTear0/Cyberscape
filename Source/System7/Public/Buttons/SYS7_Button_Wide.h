@@ -38,9 +38,6 @@ public:
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SYS7_Button|Defaults")
     float TextSize { 24.f };
-
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SYS7_Button|Defaults")
-    TObjectPtr<const UObject> FontObject;
     
     /** Events propagated up from UButton bound member. */
     UPROPERTY(BlueprintAssignable, Category = "SYS7_Button|Event")

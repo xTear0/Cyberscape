@@ -45,9 +45,7 @@ void USYS7_Button_Wide::SetTextContent() const
     if (IsValid(TextBlock_Button))
     {
         TextBlock_Button->SetText(TextContent);
-        
-        FSlateFontInfo SlateFontInfo;
-        SlateFontInfo.FontObject = FontObject;
+        FSlateFontInfo SlateFontInfo = TextBlock_Button->GetFont();
         SlateFontInfo.Size = TextSize;
         TextBlock_Button->SetFont(SlateFontInfo);
     }
