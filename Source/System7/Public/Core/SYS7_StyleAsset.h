@@ -3,6 +3,9 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "Engine/Font.h"
+#include "Fonts/SlateFontInfo.h"
+#include "Styling/SlateTypes.h"
 #include "SYS7_StyleAsset.generated.h"
 /*-------------------------------------------------------------------------*/
 
@@ -11,6 +14,18 @@
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
+USTRUCT(BlueprintType)
+struct FSYS7_FontFamily
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+    TObjectPtr<UFont> FontObject = nullptr;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta=(ClampMin="1"))
+    float DefaultSize = 12.0f;
+};
+
 USTRUCT(BlueprintType)
 struct FSYS7_Style
 {
@@ -67,43 +82,47 @@ struct FSYS7_Style
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
     TMap<FString, FSlateSound> SoundCues
     {
-        { TEXT("Account Created"),      FSlateSound() },
-        { TEXT("Button Click"),         FSlateSound() },
-        { TEXT("Button Hover"),         FSlateSound() },
-        { TEXT("Click"),                FSlateSound() },
-        { TEXT("Error"),                FSlateSound() },
-        { TEXT("Exit"),                 FSlateSound() },
+        { TEXT("Account Created"),       FSlateSound() },
+        { TEXT("Button Click"),          FSlateSound() },
+        { TEXT("Button Hover"),          FSlateSound() },
+        { TEXT("Click"),                 FSlateSound() },
+        { TEXT("Error"),                 FSlateSound() },
+        { TEXT("Exit"),                  FSlateSound() },
         { TEXT("Incorrect Credentials"), FSlateSound() },
-        { TEXT("Join Server"),          FSlateSound() },
-        { TEXT("Login"),                FSlateSound() },
-        { TEXT("Next"),                 FSlateSound() },
-        { TEXT("Search"),               FSlateSound() },
-        { TEXT("Searching"),            FSlateSound() },
-        { TEXT("Successful Login"),     FSlateSound() },
-        { TEXT("Transition"),           FSlateSound() }
+        { TEXT("Join Server"),           FSlateSound() },
+        { TEXT("Login"),                 FSlateSound() },
+        { TEXT("Next"),                  FSlateSound() },
+        { TEXT("Search"),                FSlateSound() },
+        { TEXT("Searching"),             FSlateSound() },
+        { TEXT("Successful Login"),      FSlateSound() },
+        { TEXT("Transition"),            FSlateSound() }
+    };
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+    TMap<FString, FSYS7_FontFamily> FontFamilies
+    {
+        { TEXT("Display"), FSYS7_FontFamily() },
+        { TEXT("Body"),    FSYS7_FontFamily() },
+        { TEXT("Mono"),    FSYS7_FontFamily() }
     };
 
     // Returns every named color across all groups — used to drive dropdowns
-    TArray<FString> GetAllColorNames() const
-    {
-        TArray<FString> Names;
-        Surfaces.GetKeys(Names);
-        TArray<FString> Temp;
-        Grays.GetKeys(Temp);    Names.Append(Temp);
-        Accents.GetKeys(Temp);  Names.Append(Temp);
-        Semantics.GetKeys(Temp);Names.Append(Temp);
-        return Names;
-    }
+    TArray<FString> GetAllColorNames() const;
 
     // Searches all groups by name and returns the color (white = not found)
-    FLinearColor FindColor(const FString& Name) const
-    {
-        if (const FLinearColor* C = Surfaces.Find(Name))  return *C;
-        if (const FLinearColor* C = Grays.Find(Name))     return *C;
-        if (const FLinearColor* C = Accents.Find(Name))   return *C;
-        if (const FLinearColor* C = Semantics.Find(Name)) return *C;
-        return FLinearColor::White;
-    }
+    FLinearColor FindColor(const FString& Name) const;
+
+    // Returns every named sound — used to drive dropdowns
+    TArray<FString> GetAllSoundNames() const;
+
+    // Looks up a sound by name (empty FSlateSound = not found)
+    FSlateSound FindSound(const FString& Name) const;
+
+    // Returns every named font family — used to drive dropdowns
+    TArray<FString> GetAllFontFamilyNames() const;
+
+    // Looks up a font family by name (default-constructed = not found)
+    FSYS7_FontFamily FindFontFamily(const FString& Name) const;
 };
 /*-------------------------------------------------------------------------*/
 
@@ -130,40 +149,31 @@ public:
     FString ActiveTheme;
 
     UFUNCTION(BlueprintCallable, BlueprintPure, Category="Styles")
-    FSYS7_Style GetActiveStyle() const
-    {
-        if (const FSYS7_Style* Found = StyleLibrary.Find(ActiveTheme))
-            return *Found;
-        return FSYS7_Style();
-    }
+    FSYS7_Style GetActiveStyle() const;
 
     UFUNCTION(BlueprintCallable, BlueprintPure, Category="Styles")
-    FSYS7_Style GetStyleByName(const FString& Name) const
-    {
-        if (const FSYS7_Style* Found = StyleLibrary.Find(Name))
-            return *Found;
-        return FSYS7_Style();
-    }
+    FSYS7_Style GetStyleByName(const FString& Name) const;
 
     UFUNCTION(BlueprintCallable, BlueprintPure, Category="Styles")
-    FLinearColor GetColorByName(const FString& Name) const
-    {
-        return GetActiveStyle().FindColor(Name);
-    }
+    FLinearColor GetColorByName(const FString& Name) const;
+
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category="Styles")
+    FSlateSound GetSoundByName(const FString& Name) const;
+
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category="Styles")
+    FSYS7_FontFamily GetFontFamilyByName(const FString& Name) const;
 
     UFUNCTION()
-    TArray<FString> GetStyleNames() const
-    {
-        TArray<FString> Keys;
-        StyleLibrary.GetKeys(Keys);
-        return Keys;
-    }
+    TArray<FString> GetStyleNames() const;
 
     UFUNCTION()
-    TArray<FString> GetActiveColorNames() const
-    {
-        return GetActiveStyle().GetAllColorNames();
-    }
+    TArray<FString> GetActiveColorNames() const;
+
+    UFUNCTION()
+    TArray<FString> GetActiveSoundNames() const;
+
+    UFUNCTION()
+    TArray<FString> GetActiveFontFamilyNames() const;
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/

@@ -9,7 +9,6 @@
 #include "Components/TextBlock.h"
 #include "Core/SYS7_StyleAsset.h"
 #include "Core/SYS7_Widget.h"
-#include "Sound/SoundBase.h"
 /*-------------------------------------------------------------------------*/
 
 
@@ -28,11 +27,21 @@ void USYS7_StyleServiceComponent::OnPreConstruct(bool bIsDesignTime)
     if (!IsValid(ComponentOwner)) return;
 
     const FLinearColor Color = GetColor();
-    const bool bHasColor = !ColorToken.IsEmpty();
+    const bool bHasColor      = !ColorToken.IsEmpty();
+    const bool bHasFontFamily = !FontFamilyToken.IsEmpty();
 
     if (UTextBlock* TextBlock = Cast<UTextBlock>(ComponentOwner))
     {
         if (bHasColor) TextBlock->SetColorAndOpacity(Color);
+
+        if (bHasFontFamily)
+        {
+            const FSlateFontInfo Font = BuildFont();
+            if (Font.HasValidFont())
+            {
+                TextBlock->SetFont(Font);
+            }
+        }
     }
     else if (UImage* Image = Cast<UImage>(ComponentOwner))
     {
@@ -87,6 +96,13 @@ void USYS7_StyleServiceComponent::OnPreConstruct(bool bIsDesignTime)
         UE_LOG(LogTemp, Warning, TEXT("StyleServiceComponent: sound tokens are set on '%s' but owner '%s' is not a UButton — sounds will be ignored."),
             *GetName(), *ComponentOwner->GetClass()->GetName());
     }
+
+    // Warn if font family was set on a non-text owner
+    if (!Cast<UTextBlock>(ComponentOwner) && bHasFontFamily)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("StyleServiceComponent: font family is set on '%s' but owner '%s' is not a UTextBlock — font will be ignored."),
+            *GetName(), *ComponentOwner->GetClass()->GetName());
+    }
 }
 
 FLinearColor USYS7_StyleServiceComponent::GetColor() const
@@ -99,15 +115,27 @@ FLinearColor USYS7_StyleServiceComponent::GetColor() const
 
 FSlateSound USYS7_StyleServiceComponent::GetSound(const FString& Token) const
 {
-    FSlateSound Sound;
     if (!IsValid(StyleAsset) || Token.IsEmpty())
-        return Sound;
+        return FSlateSound();
 
-    if (USoundBase* SoundBase = StyleAsset->GetSoundByName(Token))
-    {
-        Sound.SetResourceObject(SoundBase);
-    }
-    return Sound;
+    return StyleAsset->GetSoundByName(Token);
+}
+
+FSlateFontInfo USYS7_StyleServiceComponent::BuildFont() const
+{
+    FSlateFontInfo Font;
+
+    if (!IsValid(StyleAsset) || FontFamilyToken.IsEmpty())
+        return Font;
+
+    const FSYS7_FontFamily Family = StyleAsset->GetFontFamilyByName(FontFamilyToken);
+    if (Family.FontObject == nullptr)
+        return Font;
+
+    Font.FontObject       = Family.FontObject;
+    Font.TypefaceFontName = FName(*Typeface);
+    Font.Size             = FontSizeOverride > 0.0f ? FontSizeOverride : Family.DefaultSize;
+    return Font;
 }
 
 TArray<FString> USYS7_StyleServiceComponent::GetColorNames() const
@@ -124,6 +152,24 @@ TArray<FString> USYS7_StyleServiceComponent::GetSoundNames() const
         return {};
 
     return StyleAsset->GetActiveSoundNames();
+}
+
+TArray<FString> USYS7_StyleServiceComponent::GetFontFamilyNames() const
+{
+    if (!IsValid(StyleAsset))
+        return {};
+
+    return StyleAsset->GetActiveFontFamilyNames();
+}
+
+TArray<FString> USYS7_StyleServiceComponent::GetTypefaceNames() const
+{
+    return {
+        TEXT("Display/Default"),
+        TEXT("Display/Medium"),
+        TEXT("Display/Bold"),
+        TEXT("Display/Black")
+    };
 }
 #pragma endregion
 /*-------------------------------------------------------------------------*/
