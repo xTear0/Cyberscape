@@ -64,6 +64,25 @@ struct FSYS7_Style
         { TEXT("InfoBg"),     FLinearColor(FColor::FromHex(TEXT("1A1D32"))) },
     };
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+    TMap<FString, FSlateSound> SoundCues
+    {
+        { TEXT("Account Created"),      FSlateSound() },
+        { TEXT("Button Click"),         FSlateSound() },
+        { TEXT("Button Hover"),         FSlateSound() },
+        { TEXT("Click"),                FSlateSound() },
+        { TEXT("Error"),                FSlateSound() },
+        { TEXT("Exit"),                 FSlateSound() },
+        { TEXT("Incorrect Credentials"), FSlateSound() },
+        { TEXT("Join Server"),          FSlateSound() },
+        { TEXT("Login"),                FSlateSound() },
+        { TEXT("Next"),                 FSlateSound() },
+        { TEXT("Search"),               FSlateSound() },
+        { TEXT("Searching"),            FSlateSound() },
+        { TEXT("Successful Login"),     FSlateSound() },
+        { TEXT("Transition"),           FSlateSound() }
+    };
+
     // Returns every named color across all groups — used to drive dropdowns
     TArray<FString> GetAllColorNames() const
     {
