@@ -31,7 +31,7 @@ void USYS7_Menu_Hamburger::NativeConstruct()
 
 	HamburgerSelectionsAmount = Menu_Expanded->SelectionButtons.Num();
 
-	Button_Hamburger->OnClickedPostAnim.AddDynamic(this, &USYS7_Menu_Hamburger::ToggleDropdown);
+	Button_Hamburger->OnClicked.AddDynamic(this, &USYS7_Menu_Hamburger::ToggleDropdown);
 	Menu_Expanded->FocusLostDelegate.AddDynamic(this, &USYS7_Menu_Hamburger::Collapse);
 	Menu_Expanded->OnCollapsedAnimationFinished.AddDynamic(this, &USYS7_Menu_Hamburger::FinalizeCollapse);
 
@@ -57,19 +57,19 @@ void USYS7_Menu_Hamburger::BindButtons()
 	if (!Menu_Expanded) return;
 
 	if (HamburgerSelectionsAmount >= 1 && IsValid(Menu_Expanded->Button_Selection1))
-		Menu_Expanded->Button_Selection1->OnClickedPostAnim.AddDynamic(this, &USYS7_Menu_Hamburger::OnBtn1Clicked);
+		Menu_Expanded->Button_Selection1->OnClicked.AddDynamic(this, &USYS7_Menu_Hamburger::OnBtn1Clicked);
 
 	if (HamburgerSelectionsAmount >= 2 && IsValid(Menu_Expanded->Button_Selection2))
-		Menu_Expanded->Button_Selection2->OnClickedPostAnim.AddDynamic(this, &USYS7_Menu_Hamburger::OnBtn2Clicked);
+		Menu_Expanded->Button_Selection2->OnClicked.AddDynamic(this, &USYS7_Menu_Hamburger::OnBtn2Clicked);
 
 	if (HamburgerSelectionsAmount >= 3 && IsValid(Menu_Expanded->Button_Selection3))
-		Menu_Expanded->Button_Selection3->OnClickedPostAnim.AddDynamic(this, &USYS7_Menu_Hamburger::OnBtn3Clicked);
+		Menu_Expanded->Button_Selection3->OnClicked.AddDynamic(this, &USYS7_Menu_Hamburger::OnBtn3Clicked);
 
 	if (HamburgerSelectionsAmount >= 4 && IsValid(Menu_Expanded->Button_Selection4))
-		Menu_Expanded->Button_Selection4->OnClickedPostAnim.AddDynamic(this, &USYS7_Menu_Hamburger::OnBtn4Clicked);
+		Menu_Expanded->Button_Selection4->OnClicked.AddDynamic(this, &USYS7_Menu_Hamburger::OnBtn4Clicked);
 
 	if (HamburgerSelectionsAmount >= 5 && IsValid(Menu_Expanded->Button_Selection5))
-		Menu_Expanded->Button_Selection5->OnClickedPostAnim.AddDynamic(this, &USYS7_Menu_Hamburger::OnBtn5Clicked);
+		Menu_Expanded->Button_Selection5->OnClicked.AddDynamic(this, &USYS7_Menu_Hamburger::OnBtn5Clicked);
 }
 
 void USYS7_Menu_Hamburger::ToggleDropdown()

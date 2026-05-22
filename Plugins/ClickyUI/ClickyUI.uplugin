@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "ClickyUI",
+	"Description": "ClickyUI is a modular and expandable UI plugin, designed to provide developers with plug-in-play features for buttons, widget backgrounds and designs, menus, and more. More features continually added.",
+	"Category": "Other",
+	"CreatedBy": "Spencer Kotrosa",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "ClickyUI",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}

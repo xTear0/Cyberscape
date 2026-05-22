@@ -43,9 +43,9 @@ public:
     UPROPERTY(BlueprintAssignable, Category = "SYS7_Button|Event")
     FSYS7_Button_Wide_OnClickedEvent OnClicked;
 
-    /* Instead of OnClicked, you'd rather use this  */
+    /* This event triggers immediately, instead of waiting for the animation   */
     UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "SYS7_Button|Event")
-    FSYS7_Button_Wide_OnClickedEvent OnClickedPostAnim;
+    FSYS7_Button_Wide_OnClickedEvent OnClickedInstant;
     
     UPROPERTY(BlueprintAssignable, Category = "SYS7_Button|Event")
     FSYS7_Button_Wide_OnPressedEvent OnPressed;

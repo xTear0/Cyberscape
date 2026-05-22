@@ -33,15 +33,15 @@ void UDS_SignInOverlay::NativeConstruct()
 	PortalManager = NewObject<UDS_PortalManager>(this, PortalManagerClass);
 	
 	// Bind the Button to show sign-up page.
-	SignInPage->Button_SignUp->OnClickedPostAnim.AddDynamic(this, &UDS_SignInOverlay::ShowSignUpPage);
-	SignInPage->Button_SignIn->OnClickedPostAnim.AddDynamic(this, &UDS_SignInOverlay::SignInButtonClicked);
+	SignInPage->Button_SignUp->OnClicked.AddDynamic(this, &UDS_SignInOverlay::ShowSignUpPage);
+	SignInPage->Button_SignIn->OnClicked.AddDynamic(this, &UDS_SignInOverlay::SignInButtonClicked);
 	// Bind the button to quit the game.
-	SignInPage->Button_Quit->OnClickedPostAnim.AddDynamic(PortalManager, &UDS_PortalManager::QuitGame);
+	SignInPage->Button_Quit->OnClicked.AddDynamic(PortalManager, &UDS_PortalManager::QuitGame);
 
 	// Sign Up Page Button Bindings
-	SignUpPage->Button_Back->OnClickedPostAnim.AddDynamic(this, &UDS_SignInOverlay::ShowSignInPage);
-	SignUpPage->Button_SignUp->OnClickedPostAnim.AddDynamic(this, &UDS_SignInOverlay::SignUpButtonClicked);
-	SignUpPage->Button_AlreadyHaveCode->OnClickedPostAnim.AddDynamic(this, &UDS_SignInOverlay::AlreadyHaveCodeButtonClicked);
+	SignUpPage->Button_Back->OnClicked.AddDynamic(this, &UDS_SignInOverlay::ShowSignInPage);
+	SignUpPage->Button_SignUp->OnClicked.AddDynamic(this, &UDS_SignInOverlay::SignUpButtonClicked);
+	SignUpPage->Button_AlreadyHaveCode->OnClicked.AddDynamic(this, &UDS_SignInOverlay::AlreadyHaveCodeButtonClicked);
 	
 	// Portal Manager Bindings
 	// Widget Switchers
@@ -62,16 +62,16 @@ void UDS_SignInOverlay::NativeConstruct()
 	PortalManager->AlreadyReceivedAuthCodeStatusMessageDelegate.AddDynamic(this, &UDS_SignInOverlay::StatusMessageSoundEvent);
 	
 	// Sign Up Page Confirmation Button Binding
-	SignUpPageConfirmation->Button_Confirm->OnClickedPostAnim.AddDynamic(this, &UDS_SignInOverlay::AuthConfirmButtonClicked);
-	SignUpPageConfirmation->Button_Back->OnClickedPostAnim.AddDynamic(this, &UDS_SignInOverlay::ShowSignUpPage);
+	SignUpPageConfirmation->Button_Confirm->OnClicked.AddDynamic(this, &UDS_SignInOverlay::AuthConfirmButtonClicked);
+	SignUpPageConfirmation->Button_Back->OnClicked.AddDynamic(this, &UDS_SignInOverlay::ShowSignUpPage);
 
 	// Sign Up Succeeded Button Binding
-	SignUpSuccess->Button_Ok->OnClickedPostAnim.AddDynamic(this, &UDS_SignInOverlay::ShowSignInPage);
+	SignUpSuccess->Button_Ok->OnClicked.AddDynamic(this, &UDS_SignInOverlay::ShowSignInPage);
 
 	// Already have a code Button Binding
-	AlreadyHaveCodePage->Button_ConfirmCode->OnClickedPostAnim.AddDynamic(this, &UDS_SignInOverlay::AlreadyHaveCodeConfirmButtonClicked);
-	AlreadyHaveCodePage->Button_ResendCode->OnClickedPostAnim.AddDynamic(this, &UDS_SignInOverlay::ResendAuthCodeButtonClicked);
-	AlreadyHaveCodePage->Button_Back->OnClickedPostAnim.AddDynamic(this, &UDS_SignInOverlay::ShowSignUpPage);
+	AlreadyHaveCodePage->Button_ConfirmCode->OnClicked.AddDynamic(this, &UDS_SignInOverlay::AlreadyHaveCodeConfirmButtonClicked);
+	AlreadyHaveCodePage->Button_ResendCode->OnClicked.AddDynamic(this, &UDS_SignInOverlay::ResendAuthCodeButtonClicked);
+	AlreadyHaveCodePage->Button_Back->OnClicked.AddDynamic(this, &UDS_SignInOverlay::ShowSignUpPage);
 }
 
 void UDS_SignInOverlay::ShowSignInPage()

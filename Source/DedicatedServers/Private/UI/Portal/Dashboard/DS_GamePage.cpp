@@ -21,7 +21,7 @@ void UDS_GamePage::NativeConstruct()
 	GameSessionsManager = NewObject<UDS_GameSessionsManager>(this, GameSessionsManagerClass);
 	GameSessionsManager->BroadcastJoinGameSessionMessage.AddDynamic(JoinGameWidget, &UDS_JoinGame::SetStatusMessage);
 	
-	JoinGameWidget->Button_JoinGame->OnClickedPostAnim.AddDynamic(this, &UDS_GamePage::JoinGameButtonClicked);
+	JoinGameWidget->Button_JoinGame->OnClicked.AddDynamic(this, &UDS_GamePage::JoinGameButtonClicked);
 }
 
 void UDS_GamePage::JoinGameButtonClicked()

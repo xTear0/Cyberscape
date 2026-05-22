@@ -22,8 +22,8 @@ void UDS_DashboardOverlay::NativeConstruct()
 
 	// The Button is a component of the CareerWidget class.
 	Button_CareerWidget->Button_Career->OnClicked.AddDynamic(this, &UDS_DashboardOverlay::ShowCareerPage);
-	Button_Play->OnClickedPostAnim.AddDynamic(this, &UDS_DashboardOverlay::ShowGamePage);
-	Button_Home->OnClickedPostAnim.AddDynamic(this, &UDS_DashboardOverlay::ShowGamePage);
+	Button_Play->OnClicked.AddDynamic(this, &UDS_DashboardOverlay::ShowGamePage);
+	Button_Home->OnClicked.AddDynamic(this, &UDS_DashboardOverlay::ShowGamePage);
 	
 	ShowGamePage();
 }
