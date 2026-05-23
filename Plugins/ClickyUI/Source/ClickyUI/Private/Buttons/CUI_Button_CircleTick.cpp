@@ -1,6 +1,6 @@
 // Copyright Spencer Kotrosa
 /*-------------------------------------------------------------------------*/
-#include "ClickyUI.h"
+#include "Buttons/CUI_Button_CircleTick.h"
 /*-------------------------------------------------------------------------*/
 
 
@@ -8,19 +8,8 @@
 /*-------------------------------------------------------------------------*/
 /*   Functions                                                             */
 /*-------------------------------------------------------------------------*/
-#pragma region ClickyUI_ClickyUI.cpp_Functions
-#define LOCTEXT_NAMESPACE "FClickyUIModule"
+#pragma region ClickyUI_CUI_Button_CircleTick.cpp_Functions
 
-void FClickyUIModule::StartupModule()
-{
-}
 
-void FClickyUIModule::ShutdownModule()
-{
-}
-
-#undef LOCTEXT_NAMESPACE
-
-IMPLEMENT_MODULE(FClickyUIModule, ClickyUI)
 #pragma endregion
 /*-------------------------------------------------------------------------*/

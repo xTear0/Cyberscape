@@ -1,14 +1,20 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
+// Copyright Spencer Kotrosa
+/*-------------------------------------------------------------------------*/
 #pragma once
-
 #include "Modules/ModuleManager.h"
+/*-------------------------------------------------------------------------*/
 
+
+
+/*-------------------------------------------------------------------------*/
+/*   Class Functionality                                                   */
+/*-------------------------------------------------------------------------*/
+#pragma region ClickyUI_ClickyUI.h_Class
 class FClickyUIModule : public IModuleInterface
 {
 public:
-
-	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
 };
+#pragma endregion
+/*-------------------------------------------------------------------------*/

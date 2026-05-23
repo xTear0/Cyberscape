@@ -1,6 +1,6 @@
 // Copyright Spencer Kotrosa
 /*-------------------------------------------------------------------------*/
-#include "ClickyUI.h"
+#include "Core/CUI_CompositeWidget.h"
 /*-------------------------------------------------------------------------*/
 
 
@@ -8,19 +8,7 @@
 /*-------------------------------------------------------------------------*/
 /*   Functions                                                             */
 /*-------------------------------------------------------------------------*/
-#pragma region ClickyUI_ClickyUI.cpp_Functions
-#define LOCTEXT_NAMESPACE "FClickyUIModule"
+#pragma region ClickyUI_CUI_CompositeWidget.cpp_Functions
 
-void FClickyUIModule::StartupModule()
-{
-}
-
-void FClickyUIModule::ShutdownModule()
-{
-}
-
-#undef LOCTEXT_NAMESPACE
-
-IMPLEMENT_MODULE(FClickyUIModule, ClickyUI)
 #pragma endregion
 /*-------------------------------------------------------------------------*/
