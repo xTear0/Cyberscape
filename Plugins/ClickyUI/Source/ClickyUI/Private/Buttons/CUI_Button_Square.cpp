@@ -1,7 +1,6 @@
 // Copyright Spencer Kotrosa
 /*-------------------------------------------------------------------------*/
 #include "Buttons/CUI_Button_Square.h"
-
 #include "Animation/WidgetAnimation.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
