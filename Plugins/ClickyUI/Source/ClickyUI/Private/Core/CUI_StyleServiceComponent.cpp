@@ -51,7 +51,7 @@ void UCUI_StyleServiceComponent::OnPreConstruct(bool bIsDesignTime)
     {
         if (bHasColor) Button->SetColorAndOpacity(Color);
 
-        FButtonStyle Style = Button->WidgetStyle;
+        FButtonStyle Style = Button->GetStyle();
         bool bStyleChanged = false;
 
         if (!PressedSoundToken.IsEmpty())
