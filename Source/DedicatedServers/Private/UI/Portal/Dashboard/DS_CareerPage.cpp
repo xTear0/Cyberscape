@@ -20,13 +20,13 @@ void UDS_CareerPage::NativeConstruct()
 	KebabMenu->OnSelectionChanged.AddDynamic(this, &UDS_CareerPage::SwitchToPage);
 }
 
-void UDS_CareerPage::SwitchToPage(ESYS7_Menu_Kebab_Selection PageSelection)
+void UDS_CareerPage::SwitchToPage(ECUI_Menu_Kebab_Selection PageSelection)
 {
-	if (PageSelection == ESYS7_Menu_Kebab_Selection::Selection1)
+	if (PageSelection == ECUI_Menu_Kebab_Selection::Selection1)
 	{
 		PageSwitcher->SetActiveWidget(Page_Statistics);
 	}
-	else if (PageSelection == ESYS7_Menu_Kebab_Selection::Selection2)
+	else if (PageSelection == ECUI_Menu_Kebab_Selection::Selection2)
 	{
 		PageSwitcher->SetActiveWidget(Page_Leaderboards);	
 	}

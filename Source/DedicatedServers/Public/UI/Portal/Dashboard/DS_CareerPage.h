@@ -3,7 +3,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Menus/Kebab/SYS7_Menu_Kebab.h"
+#include "Menus/Kebab/CUI_Menu_Kebab.h"
 #include "DS_CareerPage.generated.h"
 /*-------------------------------------------------------------------------*/
 
@@ -33,7 +33,7 @@ class DEDICATEDSERVERS_API UDS_CareerPage : public UUserWidget
 public:
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_Menu_Kebab> KebabMenu;
+	TObjectPtr<UCUI_Menu_Kebab> KebabMenu;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UWidgetSwitcher> PageSwitcher;
@@ -51,7 +51,7 @@ protected:
 	virtual void NativeConstruct() override;
 
 	UFUNCTION()
-	void SwitchToPage(ESYS7_Menu_Kebab_Selection PageSelection);
+	void SwitchToPage(ECUI_Menu_Kebab_Selection PageSelection);
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/

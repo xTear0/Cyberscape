@@ -13,6 +13,7 @@
 /*-------------------------------------------------------------------------*/
 class UCUI_Button_Wide;
 class UScrollBox;
+class UTextBlock;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCUI_Menu_Dropdown_FocusLost);
 /*-------------------------------------------------------------------------*/
 
@@ -34,6 +35,13 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Dropdown")
 	TArray<TObjectPtr<UCUI_Button_Wide>> OptionButtons;
+
+	/* Optional section/category label shown above the options list (e.g. "Account Management"). */
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UTextBlock> TextBlock_OptionsTitle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dropdown")
+	FText OptionsTitle = FText::GetEmpty();
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UScrollBox> ScrollBox_Options;
@@ -57,6 +65,7 @@ public:
 
 protected:
 
+	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeOnFocusLost(const FFocusEvent& InFocusEvent) override;
 

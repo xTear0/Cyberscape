@@ -12,11 +12,5 @@ public class CyberscapeServerTarget : TargetRules
 
         ExtraModuleNames.Add("Cyberscape");
         ExtraModuleNames.Add("DedicatedServers");
-        RegisterModulesCreatedByRider();
-    }
-
-    private void RegisterModulesCreatedByRider()
-    {
-        ExtraModuleNames.AddRange(new string[] { "System7" });
     }
 }

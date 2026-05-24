@@ -1,11 +1,11 @@
 // Copyright xTear Studios
 /*-------------------------------------------------------------------------*/
 #include "UI/Portal/SignIn/DS_SignUpPageConfirmation.h"
-#include "Buttons/SYS7_Button_Wide.h"
+#include "Buttons/CUI_Button_Wide.h"
 #include "Components/EditableTextBox.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
-#include "Texts/SYS7_EditableTextBox.h"
+#include "Texts/CUI_EditableTextBox.h"
 /*-------------------------------------------------------------------------*/
 
 

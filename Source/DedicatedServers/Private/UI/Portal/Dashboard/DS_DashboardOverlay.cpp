@@ -1,7 +1,7 @@
 // Copyright xTear Studios
 /*-------------------------------------------------------------------------*/
 #include "UI/Portal/Dashboard/DS_DashboardOverlay.h"
-#include "Buttons/SYS7_Button_Wide.h"
+#include "Buttons/CUI_Button_Wide.h"
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
 #include "UI/Portal/Dashboard/DS_CareerPage.h"

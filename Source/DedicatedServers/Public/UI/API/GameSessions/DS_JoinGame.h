@@ -11,7 +11,7 @@
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
-class USYS7_Button_Wide;
+class UCUI_Button_Wide;
 class UTextBlock;
 class UDS_UITheme;
 /*-------------------------------------------------------------------------*/
@@ -33,7 +33,7 @@ public:
 	TObjectPtr<UDS_UITheme> Theme_Asset;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_Button_Wide> Button_JoinGame;
+	TObjectPtr<UCUI_Button_Wide> Button_JoinGame;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TextBlock_StatusMessage;

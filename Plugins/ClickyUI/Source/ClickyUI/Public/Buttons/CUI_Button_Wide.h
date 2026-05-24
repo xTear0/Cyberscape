@@ -40,7 +40,7 @@ public:
     float TextSize { 24.f };
 
     /** Events propagated up from UButton bound member. */
-    UPROPERTY(BlueprintAssignable, Category = "CUI_Button|Event")
+    UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "CUI_Button|Event")
     FCUI_Button_Wide_OnClickedEvent OnClicked;
 
     /* This event triggers immediately, instead of waiting for the animation   */
@@ -100,13 +100,6 @@ protected:
     virtual void NativeDestruct() override;
     void SetTextContent() const;
     virtual void NativePreConstruct() override;
-
-private:
-    UFUNCTION() void HandleClicked()    { OnClicked.Broadcast();   }
-    UFUNCTION() void HandlePressed()    { OnPressed.Broadcast();   }
-    UFUNCTION() void HandleReleased()   { OnReleased.Broadcast();  }
-    UFUNCTION() void HandleHovered()    { OnHovered.Broadcast();   }
-    UFUNCTION() void HandleUnhovered()  { OnUnhovered.Broadcast(); }
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/

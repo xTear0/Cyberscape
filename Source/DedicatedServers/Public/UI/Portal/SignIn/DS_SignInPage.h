@@ -15,8 +15,8 @@
 class UButton;
 class UTextBlock;
 class USoundBase;
-class USYS7_Button_Wide;
-class USYS7_EditableTextBox;
+class UCUI_Button_Wide;
+class UCUI_EditableTextBox;
 /*-------------------------------------------------------------------------*/
 
 
@@ -35,19 +35,19 @@ public:
 	virtual void NativeConstruct() override;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_EditableTextBox> TextBox_Username;
+	TObjectPtr<UCUI_EditableTextBox> TextBox_Username;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_EditableTextBox> TextBox_Password;
+	TObjectPtr<UCUI_EditableTextBox> TextBox_Password;
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_Button_Wide> Button_SignIn;
+	TObjectPtr<UCUI_Button_Wide> Button_SignIn;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_Button_Wide> Button_SignUp;
+	TObjectPtr<UCUI_Button_Wide> Button_SignUp;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_Button_Wide> Button_Quit;
+	TObjectPtr<UCUI_Button_Wide> Button_Quit;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TextBox_StatusMessage;

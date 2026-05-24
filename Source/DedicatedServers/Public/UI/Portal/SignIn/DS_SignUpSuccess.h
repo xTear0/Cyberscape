@@ -11,7 +11,7 @@
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
-class USYS7_Button_Wide;
+class UCUI_Button_Wide;
 /*-------------------------------------------------------------------------*/
 
 
@@ -27,7 +27,7 @@ class DEDICATEDSERVERS_API UDS_SignUpSuccess : public UUserWidget
 
 public:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_Button_Wide> Button_Ok;
+	TObjectPtr<UCUI_Button_Wide> Button_Ok;
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/

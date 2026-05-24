@@ -22,6 +22,10 @@ struct FCUI_FontFamily
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
     TObjectPtr<UFont> FontObject = nullptr;
 
+    // Matches a TypefaceFontName entry inside FontObject. Leave as None to use the font's default typeface.
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+    FName Typeface = NAME_None;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta=(ClampMin="1"))
     float DefaultSize = 12.0f;
 };

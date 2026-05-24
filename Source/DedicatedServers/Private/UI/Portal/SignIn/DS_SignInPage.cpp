@@ -6,8 +6,8 @@
 #include "Components/EditableTextBox.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
-#include "System7/Public/Buttons/SYS7_Button_Wide.h"
-#include "Texts/SYS7_EditableTextBox.h"
+#include "Buttons/CUI_Button_Wide.h"
+#include "Texts/CUI_EditableTextBox.h"
 /*-------------------------------------------------------------------------*/
 
 

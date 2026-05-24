@@ -11,12 +11,12 @@
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
-class USYS7_Menu_Hamburger;
+class UCUI_Menu_Hamburger;
 class UWidgetSwitcher;
 class UDS_Career_Statistics_FFA;
 class UDS_Career_Statistics_Deathmatch;
 class UDS_Career_Statistics_Domination;
-enum class ESYS7_Menu_Hamburger_Selection : uint8;
+enum class ECUI_Menu_Hamburger_Selection : uint8;
 /*-------------------------------------------------------------------------*/
 
 
@@ -33,7 +33,7 @@ class DEDICATEDSERVERS_API UDS_CareerPage_Statistics : public UUserWidget
 public:
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_Menu_Hamburger> Menu_Hamburger;
+	TObjectPtr<UCUI_Menu_Hamburger> Menu_Hamburger;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UWidgetSwitcher> StatsPageSwitcher;
@@ -51,7 +51,7 @@ protected:
 	virtual void NativeConstruct() override;
 	virtual void NativePreConstruct() override;
 
-	UFUNCTION() void SwitchToPage(ESYS7_Menu_Hamburger_Selection PageSelection);
+	UFUNCTION() void SwitchToPage(ECUI_Menu_Hamburger_Selection PageSelection);
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/

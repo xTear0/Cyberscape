@@ -33,7 +33,7 @@ class CLICKYUI_API UCUI_Button_Square : public UCUI_Widget
 
 public:
     /** Events propagated up from UButton bound member. */
-    UPROPERTY(BlueprintAssignable, Category = "CUI_Button|Event")
+    UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "CUI_Button|Event")
     FCUI_Button_Square_OnClickedEvent OnClicked;
 
     /* Instead of OnClicked, you'd rather use this  */

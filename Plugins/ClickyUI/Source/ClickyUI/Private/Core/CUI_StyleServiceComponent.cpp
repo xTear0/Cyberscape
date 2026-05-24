@@ -133,7 +133,8 @@ FSlateFontInfo UCUI_StyleServiceComponent::BuildFont() const
         return Font;
 
     Font.FontObject       = Family.FontObject;
-    Font.TypefaceFontName = FName(*Typeface);
+    Font.TypefaceFontName = Family.Typeface;
+    Font.Size             = FontSizeOverride > 0.0f ? FontSizeOverride : Family.DefaultSize;
     return Font;
 }
 
@@ -161,14 +162,5 @@ TArray<FString> UCUI_StyleServiceComponent::GetFontFamilyNames() const
     return StyleAsset->GetActiveFontFamilyNames();
 }
 
-TArray<FString> UCUI_StyleServiceComponent::GetTypefaceNames() const
-{
-    return {
-        TEXT("Display/Default"),
-        TEXT("Display/Medium"),
-        TEXT("Display/Bold"),
-        TEXT("Display/Black")
-    };
-}
 #pragma endregion
 /*-------------------------------------------------------------------------*/

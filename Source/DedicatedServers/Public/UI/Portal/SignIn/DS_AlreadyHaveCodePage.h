@@ -12,8 +12,8 @@
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
-class USYS7_EditableTextBox;
-class USYS7_Button_Wide;
+class UCUI_EditableTextBox;
+class UCUI_Button_Wide;
 class UTextBlock;
 /*-------------------------------------------------------------------------*/
 
@@ -30,19 +30,19 @@ class DEDICATEDSERVERS_API UDS_AlreadyHaveCodePage : public UUserWidget
 public:
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_EditableTextBox> TextBox_Username;
+	TObjectPtr<UCUI_EditableTextBox> TextBox_Username;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_EditableTextBox> TextBox_ConfirmationCode;
+	TObjectPtr<UCUI_EditableTextBox> TextBox_ConfirmationCode;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_Button_Wide> Button_ConfirmCode;
+	TObjectPtr<UCUI_Button_Wide> Button_ConfirmCode;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_Button_Wide> Button_ResendCode;
+	TObjectPtr<UCUI_Button_Wide> Button_ResendCode;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_Button_Wide> Button_Back;
+	TObjectPtr<UCUI_Button_Wide> Button_Back;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TextBox_StatusMessage;

@@ -16,26 +16,10 @@ void UCUI_Button_Wide::NativeConstruct()
 {
     Super::NativeConstruct();
 
-    if (ensure(UE_Button))
-    {
-        UE_Button->OnClicked.AddDynamic(this,   &UCUI_Button_Wide::HandleClicked);
-        UE_Button->OnPressed.AddDynamic(this,   &UCUI_Button_Wide::HandlePressed);
-        UE_Button->OnReleased.AddDynamic(this,  &UCUI_Button_Wide::HandleReleased);
-        UE_Button->OnHovered.AddDynamic(this,   &UCUI_Button_Wide::HandleHovered);
-        UE_Button->OnUnhovered.AddDynamic(this, &UCUI_Button_Wide::HandleUnhovered);
-    }
 }
 
 void UCUI_Button_Wide::NativeDestruct()
 {
-    if (IsValid(UE_Button))
-    {
-        UE_Button->OnClicked.RemoveAll(this);
-        UE_Button->OnPressed.RemoveAll(this);
-        UE_Button->OnReleased.RemoveAll(this);
-        UE_Button->OnHovered.RemoveAll(this);
-        UE_Button->OnUnhovered.RemoveAll(this);
-    }
 
     Super::NativeDestruct();
 }

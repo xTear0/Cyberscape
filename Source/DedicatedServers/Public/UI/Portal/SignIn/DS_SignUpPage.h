@@ -12,8 +12,8 @@
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
-class USYS7_EditableTextBox;
-class USYS7_Button_Wide;
+class UCUI_EditableTextBox;
+class UCUI_Button_Wide;
 class UTextBlock;
 /*-------------------------------------------------------------------------*/
 
@@ -30,25 +30,25 @@ class DEDICATEDSERVERS_API UDS_SignUpPage : public UUserWidget
 public:
 	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_EditableTextBox> TextBox_Username;
+	TObjectPtr<UCUI_EditableTextBox> TextBox_Username;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_EditableTextBox> TextBox_Password;
+	TObjectPtr<UCUI_EditableTextBox> TextBox_Password;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_EditableTextBox> TextBox_ConfirmPassword;
+	TObjectPtr<UCUI_EditableTextBox> TextBox_ConfirmPassword;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_EditableTextBox> TextBox_Email;
+	TObjectPtr<UCUI_EditableTextBox> TextBox_Email;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_Button_Wide> Button_SignUp;
+	TObjectPtr<UCUI_Button_Wide> Button_SignUp;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_Button_Wide> Button_AlreadyHaveCode;
+	TObjectPtr<UCUI_Button_Wide> Button_AlreadyHaveCode;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USYS7_Button_Wide> Button_Back;
+	TObjectPtr<UCUI_Button_Wide> Button_Back;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TextBox_StatusMessage;

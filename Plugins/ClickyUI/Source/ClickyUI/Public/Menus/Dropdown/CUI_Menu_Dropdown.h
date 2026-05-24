@@ -34,6 +34,13 @@ class CLICKYUI_API UCUI_Menu_Dropdown : public UCUI_Widget
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dropdown Properties")
+	FText DropdownLabel = FText::GetEmpty();
+
+	/* Overrides the OptionsTitle on the expanded widget. Has no effect if left empty. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dropdown Properties")
+	FText ExpandedTitle = FText::GetEmpty();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dropdown Properties")
 	TArray<FText> DropdownOptions =
 	{
 		FText::FromString("Option 1"),
@@ -49,7 +56,7 @@ public:
 	int32 ActiveIndex = 0;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UCUI_Button_Wide> Button_Selected;
+	TObjectPtr<UCUI_Button_Wide> Button_ToggleDropdown;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UWidgetSwitcher> WidgetSwitcher;
@@ -94,7 +101,6 @@ private:
 	void BindOptions();
 	void InitializeOptions();
 	void HandleOptionSelected(int32 Index);
-	void UpdateSelectedText(int32 Index) const;
 
 	UFUNCTION() void OnOpt1Clicked() { HandleOptionSelected(0); }
 	UFUNCTION() void OnOpt2Clicked() { HandleOptionSelected(1); }

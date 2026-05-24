@@ -14,8 +14,7 @@ public class DedicatedServers : ModuleRules
 			"UMG",
 			"GameplayTags",
 			"HTTP",
-			"NetCore",
-			"System7"
+			"NetCore"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]
@@ -23,7 +22,8 @@ public class DedicatedServers : ModuleRules
 			"Slate",
 			"SlateCore",
 			"Json",
-			"JsonUtilities"
+			"JsonUtilities", 
+			"ClickyUI"
 		});
 		
 		if (Target.Type == TargetType.Server)

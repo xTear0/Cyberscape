@@ -2,7 +2,7 @@
 /*-------------------------------------------------------------------------*/
 #include "UI/Portal/SignIn/DS_SignInOverlay.h"
 
-#include "Buttons/SYS7_Button_Wide.h"
+#include "Buttons/CUI_Button_Wide.h"
 #include "Data/Themes/DS_UITheme.h"
 #include "UI/API/GameSessions/DS_JoinGame.h"
 #include "Components/Button.h"
@@ -11,7 +11,7 @@
 #include "Components/WidgetSwitcher.h"
 #include "GameplayTags/DedicatedServersTags.h"
 #include "Kismet/GameplayStatics.h"
-#include "Texts/SYS7_EditableTextBox.h"
+#include "Texts/CUI_EditableTextBox.h"
 #include "UI/Portal/SignIn/DS_SignInPage.h"
 #include "UI/Portal/SignIn/DS_SignUpPage.h"
 #include "UI/Portal/SignIn/DS_SignUpPageConfirmation.h"

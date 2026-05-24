@@ -20,14 +20,14 @@ public class Cyberscape : ModuleRules
      
      		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
      		// Not needed at the moment as no files require this, it is moved to the DedicatedServers Module.
-     		/*if (Target.Type == TargetType.Server)
+     		if (Target.Type == TargetType.Server)
      		{
      			PublicDependencyModuleNames.Add("GameLiftServerSDK");
      		}
      		else
      		{
      			PublicDefinitions.Add("WITH_GAMELIFT=0");
-     		}*/
+     		}
      		bEnableExceptions =  true;
      	}
 }

@@ -52,10 +52,6 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Style|Font", meta=(GetOptions="GetFontFamilyNames"))
     FString FontFamilyToken;
 
-    // Typeface variant within the selected family (matches TypefaceFontName in the UFont asset)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Style|Font", meta=(GetOptions="GetTypefaceNames"))
-    FString Typeface = TEXT("Display/Default");
-
     // Optional size override — 0 means use the family's default size
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Style|Font", meta=(ClampMin="0"))
     float FontSizeOverride = 0.0f;
@@ -76,9 +72,6 @@ protected:
 
     UFUNCTION()
     TArray<FString> GetFontFamilyNames() const;
-
-    UFUNCTION()
-    TArray<FString> GetTypefaceNames() const;
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/

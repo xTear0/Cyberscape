@@ -4,7 +4,7 @@
 #include "Components/WidgetSwitcher.h"
 #include "DedicatedServers/Public/UI/Portal/Dashboard/Career/Pages/Statistics/InternalPages/DS_Career_Statistics_Deathmatch.h"
 #include "DedicatedServers/Public/UI/Portal/Dashboard/Career/Pages/Statistics/InternalPages/DS_Career_Statistics_FFA.h"
-#include "Menus/Hamburger/SYS7_Menu_Hamburger.h"
+#include "Menus/Hamburger/CUI_Menu_Hamburger.h"
 #include "UI/Portal/Dashboard/Career/Pages/Statistics/InternalPages/DS_Career_Statistics_Domination.h"
 /*-------------------------------------------------------------------------*/
 
@@ -26,15 +26,15 @@ void UDS_CareerPage_Statistics::NativePreConstruct()
 	Super::NativePreConstruct();
 }
 
-void UDS_CareerPage_Statistics::SwitchToPage(ESYS7_Menu_Hamburger_Selection PageSelection)
+void UDS_CareerPage_Statistics::SwitchToPage(ECUI_Menu_Hamburger_Selection PageSelection)
 {
-	if (PageSelection == ESYS7_Menu_Hamburger_Selection::Selection1)
+	if (PageSelection == ECUI_Menu_Hamburger_Selection::Selection1)
 	{
 		StatsPageSwitcher->SetActiveWidget(Page_Domination);
-	} else if (PageSelection == ESYS7_Menu_Hamburger_Selection::Selection2)
+	} else if (PageSelection == ECUI_Menu_Hamburger_Selection::Selection2)
 	{
 		StatsPageSwitcher->SetActiveWidget(Page_FFA);
-	} else if (PageSelection == ESYS7_Menu_Hamburger_Selection::Selection3)
+	} else if (PageSelection == ECUI_Menu_Hamburger_Selection::Selection3)
 	{
 		StatsPageSwitcher->SetActiveWidget(Page_Deathmatch);
 	}

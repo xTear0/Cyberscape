@@ -2,7 +2,7 @@
 /*-------------------------------------------------------------------------*/
 #include "UI/API/GameSessions/DS_JoinGame.h"
 
-#include "Buttons/SYS7_Button_Wide.h"
+#include "Buttons/CUI_Button_Wide.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Data/Themes/DS_UITheme.h"

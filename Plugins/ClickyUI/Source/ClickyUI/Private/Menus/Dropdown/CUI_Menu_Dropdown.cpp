@@ -4,6 +4,7 @@
 
 #include "Buttons/CUI_Button_Wide.h"
 #include "Components/Image.h"
+#include "Components/TextBlock.h"
 #include "Components/WidgetSwitcher.h"
 #include "Menus/Dropdown/CUI_Menu_Dropdown_Expanded.h"
 /*-------------------------------------------------------------------------*/
@@ -27,21 +28,46 @@ void UCUI_Menu_Dropdown::NativePreConstruct()
 	{
 		Image_Arrow->SetBrush(Arrow_Down);
 	}
+
+	if (IsValid(Button_ToggleDropdown) && !DropdownLabel.IsEmpty())
+	{
+		Button_ToggleDropdown->SetText(DropdownLabel);
+	}
+
+	if (IsValid(Menu_Expanded) && !ExpandedTitle.IsEmpty())
+	{
+		Menu_Expanded->OptionsTitle = ExpandedTitle;
+		if (IsValid(Menu_Expanded->TextBlock_OptionsTitle))
+		{
+			Menu_Expanded->TextBlock_OptionsTitle->SetText(ExpandedTitle);
+			Menu_Expanded->TextBlock_OptionsTitle->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		}
+	}
 }
 
 void UCUI_Menu_Dropdown::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	Button_Selected->OnClicked.AddDynamic(this, &UCUI_Menu_Dropdown::ToggleDropdown);
+	Button_ToggleDropdown->OnClicked.AddDynamic(this, &UCUI_Menu_Dropdown::ToggleDropdown);
 	Menu_Expanded->FocusLostDelegate.AddDynamic(this, &UCUI_Menu_Dropdown::Collapse);
 
 	BindOptions();
 	InitializeOptions();
 
-	if (DropdownOptions.IsValidIndex(ActiveIndex))
+	if (!DropdownLabel.IsEmpty())
 	{
-		UpdateSelectedText(ActiveIndex);
+		Button_ToggleDropdown->SetText(DropdownLabel);
+	}
+
+	if (!ExpandedTitle.IsEmpty())
+	{
+		Menu_Expanded->OptionsTitle = ExpandedTitle;
+		if (IsValid(Menu_Expanded->TextBlock_OptionsTitle))
+		{
+			Menu_Expanded->TextBlock_OptionsTitle->SetText(ExpandedTitle);
+			Menu_Expanded->TextBlock_OptionsTitle->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		}
 	}
 }
 
@@ -116,16 +142,7 @@ void UCUI_Menu_Dropdown::HandleOptionSelected(int32 Index)
 
 	ActiveIndex = Index;
 	Collapse();
-	UpdateSelectedText(Index);
 	OnSelectionChanged.Broadcast(Index, DropdownOptions[Index]);
-}
-
-void UCUI_Menu_Dropdown::UpdateSelectedText(int32 Index) const
-{
-	if (DropdownOptions.IsValidIndex(Index))
-	{
-		Button_Selected->SetText(DropdownOptions[Index]);
-	}
 }
 #pragma endregion
 /*-------------------------------------------------------------------------*/
