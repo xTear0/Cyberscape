@@ -26,6 +26,8 @@ void UCUI_Menu_Dropdown_Expanded::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	ClearStatusMessageText();
+	
 	SetIsFocusable(true);
 
 	OptionButtons = { Button_Option1 };
@@ -41,6 +43,11 @@ void UCUI_Menu_Dropdown_Expanded::NativeOnFocusLost(const FFocusEvent& InFocusEv
 	Super::NativeOnFocusLost(InFocusEvent);
 
 	FocusLostDelegate.Broadcast();
+}
+
+void UCUI_Menu_Dropdown_Expanded::ClearStatusMessageText() const
+{
+	TextBlock_StatusMessage->SetText(FText::GetEmpty());
 }
 #pragma endregion
 /*-------------------------------------------------------------------------*/

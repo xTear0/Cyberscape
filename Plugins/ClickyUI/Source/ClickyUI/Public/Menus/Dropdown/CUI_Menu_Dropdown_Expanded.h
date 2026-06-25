@@ -40,6 +40,13 @@ public:
 	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UTextBlock> TextBlock_OptionsTitle;
 
+	/* Optional section/category label shown above the options list (e.g. "User's Email under Account Management"). */
+	UPROPERTY(meta = (BindWidgetOptional))
+	TObjectPtr<UTextBlock> TextBlock_OptionsSubtitle;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> TextBlock_StatusMessage;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dropdown")
 	FText OptionsTitle = FText::GetEmpty();
 
@@ -63,6 +70,9 @@ public:
 
 	// Add more as needed, five should be enough. BindWidgetOptional, so you may use less if necessary, min 1.
 
+	// Helper Functions:
+	void ClearStatusMessageText() const;
+	
 protected:
 
 	virtual void NativePreConstruct() override;

@@ -2,6 +2,7 @@
 /*-------------------------------------------------------------------------*/
 #pragma once
 #include "CoreMinimal.h"
+#include "CUI_StyleAsset.h"
 #include "Blueprint/UserWidget.h"
 #include "CUI_Widget.generated.h"
 /*-------------------------------------------------------------------------*/
@@ -11,7 +12,6 @@
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
-class UCUI_StyleAsset;
 DECLARE_LOG_CATEGORY_EXTERN(LogCUI, Log, All);
 /*-------------------------------------------------------------------------*/
 
@@ -26,9 +26,13 @@ class CLICKYUI_API UCUI_Widget : public UUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Style")
+	TObjectPtr<UCUI_StyleAsset> StyleAsset;
+	
 protected:
 	virtual void NativePreConstruct() override;
-	void SanitizeWidgetBrushes(UWidget* Widget);
+
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/

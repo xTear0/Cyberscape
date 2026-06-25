@@ -87,6 +87,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Dropdown")
 	bool IsExpanded() const { return bIsExpanded; }
 
+	// Helper Functions:
+	void ClearStatusMessageText() const;
+
 protected:
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;

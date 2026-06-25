@@ -144,5 +144,10 @@ void UCUI_Menu_Dropdown::HandleOptionSelected(int32 Index)
 	Collapse();
 	OnSelectionChanged.Broadcast(Index, DropdownOptions[Index]);
 }
+
+void UCUI_Menu_Dropdown::ClearStatusMessageText() const
+{
+	Menu_Expanded->ClearStatusMessageText();
+}
 #pragma endregion
 /*-------------------------------------------------------------------------*/

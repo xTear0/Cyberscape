@@ -129,7 +129,7 @@ struct FCUI_Style
 /*-------------------------------------------------------------------------*/
 #pragma region ClickyUI_CUI_StyleAsset.h_Class
 UCLASS(BlueprintType)
-class UCUI_StyleAsset : public UDataAsset
+class CLICKYUI_API UCUI_StyleAsset : public UDataAsset
 {
     GENERATED_BODY()
 
@@ -152,6 +152,9 @@ public:
 
     UFUNCTION(BlueprintCallable, BlueprintPure, Category="Styles")
     FSlateSound GetSoundByName(const FString& Name) const;
+
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category="Styles")
+    USoundBase* GetSoundBaseByName(const FString& Name) const;
 
     UFUNCTION(BlueprintCallable, BlueprintPure, Category="Styles")
     FCUI_FontFamily GetFontFamilyByName(const FString& Name) const;

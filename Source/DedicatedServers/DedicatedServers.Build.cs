@@ -14,7 +14,8 @@ public class DedicatedServers : ModuleRules
 			"UMG",
 			"GameplayTags",
 			"HTTP",
-			"NetCore"
+			"NetCore", 
+			"ClickyUI"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]

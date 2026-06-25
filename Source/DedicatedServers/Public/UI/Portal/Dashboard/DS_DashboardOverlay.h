@@ -17,6 +17,7 @@ class UDS_CareerPage;
 class UDS_LoadoutSwitcherPage;
 class UCUI_Button_Wide;
 class UDS_CareerInfoButton;
+class UCUI_Menu_Dropdown;
 /*-------------------------------------------------------------------------*/
 
 
@@ -34,11 +35,11 @@ public:
 	UPROPERTY(meta = (BindWidget)) TObjectPtr<UWidgetSwitcher> DashboardSwitcher;
 	UPROPERTY(meta = (BindWidget)) TObjectPtr<UCUI_Button_Wide> Button_Home;							// TODO: Switches to the Character Selector
 	UPROPERTY(meta = (BindWidget)) TObjectPtr<UCUI_Button_Wide> Button_Play;							// Switches to the Game Page.
-	UPROPERTY(meta = (BindWidget)) TObjectPtr<UDS_CareerInfoButton> Button_CareerWidget;	// Switches to the Career Page.
+	UPROPERTY(meta = (BindWidget)) TObjectPtr<UDS_CareerInfoButton> Button_CareerWidget;				// Switches to the Career Page.
 	UPROPERTY(meta = (BindWidget)) TObjectPtr<UDS_GamePage> Page_Game;
 	UPROPERTY(meta = (BindWidget)) TObjectPtr<UDS_CareerPage> Page_Career;
 	UPROPERTY(meta = (BindWidget)) TObjectPtr<UDS_LoadoutSwitcherPage> Page_LoadoutSwitcher;
-
+	UPROPERTY(meta = (BindWidget)) TObjectPtr<UCUI_Menu_Dropdown> Menu_Dropdown;
 
 protected:
 	virtual void NativeConstruct() override;

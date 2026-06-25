@@ -90,6 +90,12 @@ FSlateSound UCUI_StyleAsset::GetSoundByName(const FString& Name) const
     return GetActiveStyle().FindSound(Name);
 }
 
+USoundBase* UCUI_StyleAsset::GetSoundBaseByName(const FString& Name) const
+{
+    const FSlateSound& Found = GetActiveStyle().FindSound(Name);
+    return Cast<USoundBase>(const_cast<UObject*>(Found.GetResourceObject()));
+}
+
 FCUI_FontFamily UCUI_StyleAsset::GetFontFamilyByName(const FString& Name) const
 {
     return GetActiveStyle().FindFontFamily(Name);

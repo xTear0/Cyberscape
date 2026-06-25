@@ -44,8 +44,6 @@ class CLICKYUI_API UCUI_Menu_Hamburger : public UCUI_Widget
 	GENERATED_BODY()
 
 public:
-		UPROPERTY(EditDefaultsOnly, Category="Style")
-		TObjectPtr<UCUI_StyleAsset> StyleAsset;
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Menu Properties")
 		TArray<FText> HamburgerOptions =
