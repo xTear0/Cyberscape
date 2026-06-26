@@ -13,6 +13,7 @@
 /*-------------------------------------------------------------------------*/
 class UInputMappingContext;
 class USkeletalMeshComponent;
+class UOperatorCombatComponent;
 class UInputAction;
 struct FInputActionValue;
 class UCameraComponent;
@@ -39,51 +40,38 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
-	void Move(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value);
 	
 private:
-	UPROPERTY(VisibleAnywhere, Category = "Mesh")
+	UPROPERTY(VisibleAnywhere, Category = "CYBERSCAPE|Mesh")
 	TObjectPtr<USkeletalMeshComponent> Mesh1P;
+
+	UPROPERTY(VisibleAnywhere, Category = "CYBERSCAPE|Combat")
+	TObjectPtr<UOperatorCombatComponent> CombatComponent;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	UPROPERTY(VisibleAnywhere, Category = "CYBERSCAPE|Camera")
 	TObjectPtr<USpringArmComponent> SpringArm;
 
-	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	UPROPERTY(VisibleAnywhere, Category = "CYBERSCAPE|Camera")
 	TObjectPtr<UCameraComponent> FirstPersonCamera;
 
-	UPROPERTY(EditAnywhere, Category = "Input")
-	TObjectPtr<UInputMappingContext> OperatorMappingContext;
-
-	UPROPERTY(EditAnywhere, Category = "Input")
-	TObjectPtr<UInputAction> MoveAction;
-
-	UPROPERTY(EditAnywhere, Category = "Input")
-	TObjectPtr<UInputAction> LookAction;
-
-	UPROPERTY(EditAnywhere, Category = "Input")
-	TObjectPtr<UInputAction> JumpAction;
-
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
+	TObjectPtr<UInputMappingContext> OperatorIMC;
+	
+	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
 	TObjectPtr<UInputAction> EquipAction;
 
-	UPROPERTY(EditAnywhere, Category = "Input")
-	TObjectPtr<UInputAction> CrouchAction;
-
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
 	TObjectPtr<UInputAction> AimAction;
 
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
 	TObjectPtr<UInputAction> FireAction;
 
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
 	TObjectPtr<UInputAction> ReloadAction;
 
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
 	TObjectPtr<UInputAction> ThrowGrenadeAction;
-public:
-	
+
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/

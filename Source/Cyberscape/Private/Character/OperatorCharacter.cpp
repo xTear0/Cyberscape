@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Combat/OperatorCombatComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 /*-------------------------------------------------------------------------*/
 
@@ -49,6 +50,9 @@ AOperatorCharacter::AOperatorCharacter()
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	CombatComponent = CreateDefaultSubobject<UOperatorCombatComponent>("CombatComponent");
+	CombatComponent->SetIsReplicated(true);
 }
 
 void AOperatorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -56,11 +60,7 @@ void AOperatorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
-
-	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AOperatorCharacter::Move);
-	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AOperatorCharacter::Look);
-	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AOperatorCharacter::Jump);
-	/*
+	/*	
 	EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Started, this, &AOperatorCharacter::EquipButtonPressed);
 	EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AOperatorCharacter::CrouchButtonPressed);
 	EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &AOperatorCharacter::ReloadButtonPressed);
@@ -81,7 +81,7 @@ void AOperatorCharacter::BeginPlay()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
 			ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
-			Subsystem->AddMappingContext(OperatorMappingContext, 0);
+			Subsystem->AddMappingContext(OperatorIMC, 0);
 		}	
 	}
 
@@ -93,27 +93,6 @@ void AOperatorCharacter::BeginPlay()
 	{
 		AttachedGrenade->SetVisibility(false);
 	}*/
-}
-
-void AOperatorCharacter::Move(const FInputActionValue& Value)
-{
-	/*if (bDisableGameplay) return;*/
-	const FVector2D MovementVector = Value.Get<FVector2D>();
-	if (Controller != nullptr)
-	{
-		const FRotator YawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
-		const FVector ForwardDirection(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X));
-		const FVector RightDirection(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y));
-		AddMovementInput(ForwardDirection, MovementVector.Y);
-		AddMovementInput(RightDirection, MovementVector.X);
-	}
-}
-
-void AOperatorCharacter::Look(const FInputActionValue& Value)
-{
-	const FVector2D LookAxisVector = Value.Get<FVector2D>();
-	AddControllerYawInput(LookAxisVector.X);
-	AddControllerPitchInput(LookAxisVector.Y);
 }
 
 void AOperatorCharacter::Tick(float DeltaTime)
