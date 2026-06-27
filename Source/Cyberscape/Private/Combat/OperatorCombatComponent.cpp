@@ -24,32 +24,32 @@ void UOperatorCombatComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 void UOperatorCombatComponent::Initiate_CycleWeapon()
 {
-	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Initiate_CycleWeapon"), false);
 }
 
 void UOperatorCombatComponent::Initiate_FireWeapon_Pressed()
 {
-	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Initiate_FireWeapon_Pressed"), false);
 }
 
 void UOperatorCombatComponent::Initiate_FireWeapon_Released()
 {
-	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Initiate_FireWeapon_Released"), false);
 }
 
 void UOperatorCombatComponent::Initiate_ReloadWeapon()
 {
-	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Initiate_ReloadWeapon"), false);
 }
 
 void UOperatorCombatComponent::Initiate_Aim_Pressed()
 {
-	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Initiate_Aim_Pressed"), false);
 }
 
 void UOperatorCombatComponent::Initiate_Aim_Released()
 {
-	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Initiate_Aim_Released"), false);
 }
 #pragma endregion
 /*-------------------------------------------------------------------------*/

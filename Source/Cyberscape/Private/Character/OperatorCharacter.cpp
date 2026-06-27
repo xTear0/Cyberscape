@@ -59,31 +59,50 @@ void AOperatorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
-	/*	
-	EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Started, this, &AOperatorCharacter::EquipButtonPressed);
-	EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AOperatorCharacter::CrouchButtonPressed);
-	EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &AOperatorCharacter::ReloadButtonPressed);
-	EnhancedInputComponent->BindAction(ThrowGrenadeAction, ETriggerEvent::Started, this, &AOperatorCharacter::GrenadeButtonPressed);
-	EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AOperatorCharacter::AimButtonPressed);
-	EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AOperatorCharacter::AimButtonReleased);
-	EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &AOperatorCharacter::FireButtonPressed);
-	EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &AOperatorCharacter::FireButtonReleased);
-	*/
+	UEnhancedInputComponent* OperatorInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
+	
+	OperatorInputComponent->BindAction(CycleWeaponAction, ETriggerEvent::Started, this, &AOperatorCharacter::Input_CycleWeapon);
+	OperatorInputComponent->BindAction(FireWeaponAction, ETriggerEvent::Started, this, &AOperatorCharacter::Input_FireWeapon_Pressed);
+	OperatorInputComponent->BindAction(FireWeaponAction, ETriggerEvent::Completed, this, &AOperatorCharacter::Input_FireWeapon_Released);
+	OperatorInputComponent->BindAction(AimWeaponAction, ETriggerEvent::Started, this, &AOperatorCharacter::Input_Aim_Pressed);
+	OperatorInputComponent->BindAction(AimWeaponAction, ETriggerEvent::Completed, this, &AOperatorCharacter::Input_Aim_Released);
+	OperatorInputComponent->BindAction(ReloadWeaponAction, ETriggerEvent::Started, this, &AOperatorCharacter::Input_ReloadWeapon);
+}
+
+
+void AOperatorCharacter::Input_CycleWeapon()
+{
+	CombatComponent->Initiate_CycleWeapon();
+}
+
+void AOperatorCharacter::Input_FireWeapon_Pressed()
+{
+	CombatComponent->Initiate_FireWeapon_Pressed();
+}
+
+void AOperatorCharacter::Input_FireWeapon_Released()
+{
+	CombatComponent->Initiate_FireWeapon_Released();
+}
+
+void AOperatorCharacter::Input_ReloadWeapon()
+{
+	CombatComponent->Initiate_ReloadWeapon();
+}
+
+void AOperatorCharacter::Input_Aim_Pressed()
+{
+	CombatComponent->Initiate_Aim_Pressed();
+}
+
+void AOperatorCharacter::Input_Aim_Released()
+{
+	CombatComponent->Initiate_Aim_Released();
 }
 
 void AOperatorCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
-			ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(OperatorIMC, 0);
-		}	
-	}
 
 	/*if (HasAuthority())
 	{

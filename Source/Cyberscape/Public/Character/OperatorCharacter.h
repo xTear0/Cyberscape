@@ -42,6 +42,14 @@ protected:
 	virtual void BeginPlay() override;
 	
 private:
+
+	void Input_CycleWeapon();
+	void Input_FireWeapon_Pressed();
+	void Input_FireWeapon_Released();
+	void Input_ReloadWeapon();
+	void Input_Aim_Pressed();
+	void Input_Aim_Released();
+	
 	UPROPERTY(VisibleAnywhere, Category = "CYBERSCAPE|Mesh")
 	TObjectPtr<USkeletalMeshComponent> Mesh1P;
 
@@ -53,25 +61,18 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "CYBERSCAPE|Camera")
 	TObjectPtr<UCameraComponent> FirstPersonCamera;
-
-	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
-	TObjectPtr<UInputMappingContext> OperatorIMC;
 	
 	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
-	TObjectPtr<UInputAction> EquipAction;
+	TObjectPtr<UInputAction> CycleWeaponAction;
 
 	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
-	TObjectPtr<UInputAction> AimAction;
+	TObjectPtr<UInputAction> FireWeaponAction;
 
 	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
-	TObjectPtr<UInputAction> FireAction;
+	TObjectPtr<UInputAction> ReloadWeaponAction;
 
 	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
-	TObjectPtr<UInputAction> ReloadAction;
-
-	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
-	TObjectPtr<UInputAction> ThrowGrenadeAction;
-
+	TObjectPtr<UInputAction> AimWeaponAction;
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/
