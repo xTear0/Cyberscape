@@ -5,9 +5,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "InputActionValue.h"
 #include "Combat/OperatorCombatComponent.h"
+#include "Data/WeaponData.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Weapon/Weapon.h"
 /*-------------------------------------------------------------------------*/
 
 
@@ -53,6 +54,8 @@ AOperatorCharacter::AOperatorCharacter()
 
 	CombatComponent = CreateDefaultSubobject<UOperatorCombatComponent>("CombatComponent");
 	CombatComponent->SetIsReplicated(true);
+
+	DefaultFOV = 90.0f;
 }
 
 void AOperatorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -69,6 +72,43 @@ void AOperatorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	OperatorInputComponent->BindAction(ReloadWeaponAction, ETriggerEvent::Started, this, &AOperatorCharacter::Input_ReloadWeapon);
 }
 
+void AOperatorCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	if (IsValid(CombatComponent))
+	{
+		CombatComponent->SpawnInventory();
+	}
+}
+
+FName AOperatorCharacter::GetWeaponAttachmentPoint_Implementation(const FGameplayTag& WeaponType) const
+{
+	checkf(CombatComponent->WeaponData, TEXT("No Weapon Data Asset - Please fill out BP_OperatorCharacter"))
+	return CombatComponent->WeaponData->GripPoints.FindChecked(WeaponType);
+}
+
+USkeletalMeshComponent* AOperatorCharacter::GetMesh1P_Implementation() const
+{
+	return Mesh1P;
+	
+}
+
+USkeletalMeshComponent* AOperatorCharacter::GetMesh3P_Implementation() const
+{
+	return GetMesh();
+}
+
+FRotator AOperatorCharacter::GetFixedAimRotation() const
+{
+	FRotator AimRotation = GetBaseAimRotation();
+	if (AimRotation.Pitch > 90.f && !IsLocallyControlled())
+	{
+		const FVector2D InRange(270.f, 360.f);
+		const FVector2D OutRange(-90.f, 0.f);
+		AimRotation.Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AimRotation.Pitch);
+	}
+	return AimRotation;
+}
 
 void AOperatorCharacter::Input_CycleWeapon()
 {
@@ -93,16 +133,20 @@ void AOperatorCharacter::Input_ReloadWeapon()
 void AOperatorCharacter::Input_Aim_Pressed()
 {
 	CombatComponent->Initiate_Aim_Pressed();
+	OnAim(true);
 }
 
 void AOperatorCharacter::Input_Aim_Released()
 {
 	CombatComponent->Initiate_Aim_Released();
+	OnAim(false);
 }
 
 void AOperatorCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FirstPersonCamera->SetFieldOfView(DefaultFOV);
 
 	/*if (HasAuthority())
 	{
@@ -114,9 +158,29 @@ void AOperatorCharacter::BeginPlay()
 	}*/
 }
 
+void AOperatorCharacter::CalculateFABRIKSocketTransform()
+{
+	if (IsValid(CombatComponent) && IsValid(CombatComponent->CurrentWeapon) && IsValid(CombatComponent->CurrentWeapon->GetMesh3P()))
+	{
+		FABRIK_SocketTransform = CombatComponent->CurrentWeapon->GetMesh3P()->GetSocketTransform("FABRIK_Socket", RTS_World);
+
+		FVector OutLocation;
+		FRotator OutRotation;
+		GetMesh()->TransformToBoneSpace("hand_r",
+        FABRIK_SocketTransform.GetLocation(),
+        FABRIK_SocketTransform.GetRotation().Rotator(),
+        OutLocation,
+        OutRotation);
+		FABRIK_SocketTransform.SetLocation(OutLocation);
+		FABRIK_SocketTransform.SetRotation(OutRotation.Quaternion());
+	}
+}
+
 void AOperatorCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	CalculateFABRIKSocketTransform();
 }
 #pragma endregion
 /*-------------------------------------------------------------------------*/

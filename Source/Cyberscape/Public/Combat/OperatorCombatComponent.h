@@ -11,7 +11,8 @@
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
-
+class UWeaponData;
+class AWeapon;
 /*-------------------------------------------------------------------------*/
 
 
@@ -27,7 +28,8 @@ class CYBERSCAPE_API UOperatorCombatComponent : public UActorComponent
 public:
 	UOperatorCombatComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	
 	// Cycle to next weapon in inventory
 	void Initiate_CycleWeapon();
 	
@@ -36,11 +38,40 @@ public:
 	void Initiate_ReloadWeapon();
 	void Initiate_Aim_Pressed();
 	void Initiate_Aim_Released();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CYBERSCAPE|Weapon")
+	TObjectPtr<UWeaponData> WeaponData;
+
+	void Equip(AWeapon* Weapon);
+	void SpawnInventory();
+	void DestroyInventory();
+
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	bool bAiming;
+
+	UPROPERTY(Transient, BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentWeapon)
+	TObjectPtr<AWeapon> CurrentWeapon;
 	
 protected:
+
 	
 private:
 
+	UFUNCTION()
+	void OnRep_CurrentWeapon(AWeapon* LastWeapon);
+
+	UPROPERTY(Transient, Replicated)
+	TArray<AWeapon*> Inventory;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "CYBERSCAPE|Weapon")
+	TArray<TSubclassOf<AWeapon>> DefaultWeaponClasses;
+	
+	AWeapon* SpawnWeapon(TSubclassOf<AWeapon> WeaponClass) const;
+
+	UFUNCTION(Server, Reliable)
+	void Server_Aim(bool bPressed);
+
+	void Local_Aim(bool bPressed);
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/
