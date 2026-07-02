@@ -54,7 +54,8 @@ public:
 	
 protected:
 
-	
+	UPROPERTY(EditDefaultsOnly, Category = "CYBERSCAPE|Weapon")
+	float TraceLength;
 private:
 
 	UFUNCTION()
@@ -72,10 +73,10 @@ private:
 	void Server_Aim(bool bPressed);
 
 	UFUNCTION(Server, Reliable)
-	void Server_FireWeapon();
+	void Server_FireWeapon(const FHitResult& Hit);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void Multicast_FireWeapon();
+	void Multicast_FireWeapon(const FHitResult& Hit);
 
 	void Local_Aim(bool bPressed);
 	void Local_FireWeapon();

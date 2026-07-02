@@ -18,6 +18,7 @@ UOperatorCombatComponent::UOperatorCombatComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
+	TraceLength = 20'000.f;
 }
 
 void UOperatorCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -48,6 +49,7 @@ void UOperatorCombatComponent::Initiate_FireWeapon_Pressed()
 
 void UOperatorCombatComponent::Local_FireWeapon()
 {
+	if (!IsValid(CurrentWeapon)) return;
 	// Locally, play the Anim Montage for firing the weapon.
 	ensure(IsValid(WeaponData));
 	UAnimMontage* Montage1P = WeaponData->FirstPersonMontages.FindChecked(CurrentWeapon->WeaponType).FireMontage;
@@ -58,17 +60,20 @@ void UOperatorCombatComponent::Local_FireWeapon()
 		Mesh1P->GetAnimInstance()->Montage_Play(Montage1P);
 	}
 
+	FHitResult Hit;
+	CurrentWeapon->WeaponTrace(Hit, TraceLength);
+	EPhysicalSurface ImpactSurfaceType = Hit.PhysMaterial.IsValid(false) ? Hit.PhysMaterial->SurfaceType.GetValue() : SurfaceType1;
+	CurrentWeapon->Local_Fire(Hit.ImpactPoint, Hit.ImpactNormal, ImpactSurfaceType, true);
 	// Tell the Server to fire the weapon.
-	Server_FireWeapon();
-	
+	Server_FireWeapon(Hit);
 }
 
-void UOperatorCombatComponent::Server_FireWeapon_Implementation()
+void UOperatorCombatComponent::Server_FireWeapon_Implementation(const FHitResult& Hit)
 {
-	Multicast_FireWeapon();
+	Multicast_FireWeapon(Hit);
 }
 
-void UOperatorCombatComponent::Multicast_FireWeapon_Implementation()
+void UOperatorCombatComponent::Multicast_FireWeapon_Implementation(const FHitResult& Hit)
 {
 	APawn* OwningPawn = Cast<APawn>(GetOwner());
 	if (OwningPawn->IsLocallyControlled())
@@ -78,6 +83,10 @@ void UOperatorCombatComponent::Multicast_FireWeapon_Implementation()
 	else
 	{
 		ensure(IsValid(WeaponData));
+
+		EPhysicalSurface ImpactSurfaceType = Hit.PhysMaterial.IsValid(false) ? Hit.PhysMaterial->SurfaceType.GetValue() : SurfaceType1;
+		CurrentWeapon->Local_Fire(Hit.ImpactPoint, Hit.ImpactNormal, ImpactSurfaceType, true);
+		
 		UAnimMontage* Montage3P = WeaponData->ThirdPersonMontages.FindChecked(CurrentWeapon->WeaponType).FireMontage;
 		USkeletalMeshComponent* Mesh3P = IPlayerInterface::Execute_GetMesh3P(GetOwner());
 
