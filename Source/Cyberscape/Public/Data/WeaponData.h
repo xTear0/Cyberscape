@@ -13,6 +13,7 @@
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
 class UAnimSequence;
+class UAnimMontage;
 
 USTRUCT(BlueprintType)
 struct FPlayerAnims
@@ -44,6 +45,22 @@ struct FPlayerAnims
 	TObjectPtr<UBlendSpace> Strafe_Crouching = nullptr;
 	
 };
+
+USTRUCT(BlueprintType)
+struct FMontageData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UAnimMontage> EquipMontage = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UAnimMontage> ReloadMontage = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UAnimMontage> FireMontage = nullptr;
+};
+
 /*-------------------------------------------------------------------------*/
 
 
@@ -61,12 +78,21 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "CYBERSCAPE|WeaponData|Weapons")
 	TMap<FGameplayTag, FName> GripPoints;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CYBERSCAPE|WeaponData|Weapons")
+	TMap<FGameplayTag, FMontageData> WeaponMontages;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CYBERSCAPE|WeaponData|FirstPerson")
 	TMap<FGameplayTag, FPlayerAnims> FirstPersonAnims;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CYBERSCAPE|WeaponData|ThirdPerson")
 	TMap<FGameplayTag, FPlayerAnims> ThirdPersonAnims;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CYBERSCAPE|WeaponData|FirstPerson")
+	TMap<FGameplayTag, FMontageData> FirstPersonMontages;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CYBERSCAPE|WeaponData|ThirdPerson")
+	TMap<FGameplayTag, FMontageData> ThirdPersonMontages;
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/

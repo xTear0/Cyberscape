@@ -1,7 +1,9 @@
 // Copyright xTear Studios
 /*-------------------------------------------------------------------------*/
 #include "Combat/OperatorCombatComponent.h"
+#include "Data/WeaponData.h"
 #include "GameFramework/Pawn.h"
+#include "Interfaces/PlayerInterface.h"
 #include "Net/UnrealNetwork.h"
 #include "Weapon/Weapon.h"
 /*-------------------------------------------------------------------------*/
@@ -41,7 +43,49 @@ void UOperatorCombatComponent::Initiate_CycleWeapon()
 
 void UOperatorCombatComponent::Initiate_FireWeapon_Pressed()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Initiate_FireWeapon_Pressed"), false);
+	Local_FireWeapon();
+}
+
+void UOperatorCombatComponent::Local_FireWeapon()
+{
+	// Locally, play the Anim Montage for firing the weapon.
+	ensure(IsValid(WeaponData));
+	UAnimMontage* Montage1P = WeaponData->FirstPersonMontages.FindChecked(CurrentWeapon->WeaponType).FireMontage;
+	USkeletalMeshComponent* Mesh1P = IPlayerInterface::Execute_GetMesh1P(GetOwner());
+
+	if (IsValid(Mesh1P) && IsValid(Montage1P))
+	{
+		Mesh1P->GetAnimInstance()->Montage_Play(Montage1P);
+	}
+
+	// Tell the Server to fire the weapon.
+	Server_FireWeapon();
+	
+}
+
+void UOperatorCombatComponent::Server_FireWeapon_Implementation()
+{
+	Multicast_FireWeapon();
+}
+
+void UOperatorCombatComponent::Multicast_FireWeapon_Implementation()
+{
+	APawn* OwningPawn = Cast<APawn>(GetOwner());
+	if (OwningPawn->IsLocallyControlled())
+	{
+		// Do locally controlled stuff here.
+	}
+	else
+	{
+		ensure(IsValid(WeaponData));
+		UAnimMontage* Montage3P = WeaponData->ThirdPersonMontages.FindChecked(CurrentWeapon->WeaponType).FireMontage;
+		USkeletalMeshComponent* Mesh3P = IPlayerInterface::Execute_GetMesh3P(GetOwner());
+
+		if (IsValid(Mesh3P) && IsValid(Montage3P))
+		{
+			Mesh3P->GetAnimInstance()->Montage_Play(Montage3P);
+		} 
+	}
 }
 
 void UOperatorCombatComponent::Initiate_FireWeapon_Released()
@@ -75,6 +119,7 @@ void UOperatorCombatComponent::Local_Aim(bool bPressed)
 {
 	bAiming = bPressed;
 }
+
 
 void UOperatorCombatComponent::Equip(AWeapon* Weapon)
 {

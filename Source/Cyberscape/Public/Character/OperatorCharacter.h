@@ -5,6 +5,7 @@
 #include "Combat/OperatorCombatComponent.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/PlayerInterface.h"
+#include "Types/CyberscapeTypes.h"
 #include "OperatorCharacter.generated.h"
 /*-------------------------------------------------------------------------*/
 
@@ -48,14 +49,32 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FRotator GetFixedAimRotation() const;
+	
+	UFUNCTION(BlueprintCallable)
+	bool HasCurrentWeapon() const;
 
 	UPROPERTY(BlueprintReadOnly, Category = "CYBERSCAPE|FABRIK")
 	FTransform FABRIK_SocketTransform;
 	
 protected:
 	virtual void BeginPlay() override;
-	void CalculateFABRIKSocketTransform();
 	virtual void BeginDestroy() override;
+	
+	void CalculateFABRIKSocketTransform();
+	void CalculateTurnInPlaceParameters(float DeltaTime);
+	void TurnInPlace(float DeltaTime);
+
+	FRotator StartingAimRotation;
+	float InterpAO_Yaw;
+
+	UPROPERTY(BlueprintReadOnly, Category = "CYBERSCAPE|TurnInPlace")
+	ETurningInPlace TurningStatus;
+
+	UPROPERTY(BlueprintReadOnly, Category = "CYBERSCAPE|TurnInPlace")
+	float AO_Yaw;
+
+	UPROPERTY(BlueprintReadOnly, Category = "CYBERSCAPE|Strafing")
+	float MovementOffsetYaw;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CYBERSCAPE|Combat")
 	TObjectPtr<UOperatorCombatComponent> CombatComponent;
