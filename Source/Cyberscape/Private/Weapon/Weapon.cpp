@@ -39,6 +39,12 @@ AWeapon::AWeapon()
 	// TODO: Eventually, the attachments will drive the FOV amount granted by the weapon.
 	AimFOV = 65.0f; // Default aiming on ANY weapon is 65.0f.
 	TraceRadius = 5.f;
+
+	FireTime = 0.1f;
+	MagCapacity = 10;
+	Ammo = 5;
+	StartingCarriedAmmo = 10;
+	Sequence = 0;
 }
 
 void AWeapon::OnRep_Instigator()
@@ -55,6 +61,24 @@ USkeletalMeshComponent* AWeapon::GetMesh1P() const
 USkeletalMeshComponent* AWeapon::GetMesh3P() const
 {
 	return Mesh3P;
+}
+
+UMaterialInstanceDynamic* AWeapon::GetReticleDynamicMaterialInstance()
+{
+	if (!IsValid(DynMatInst_Reticle))
+	{
+		DynMatInst_Reticle = UMaterialInstanceDynamic::Create(ReticleMaterial, this);
+	}
+	return DynMatInst_Reticle;
+}
+
+UMaterialInstanceDynamic* AWeapon::GetAmmoCounterDynamicMaterialInstance()
+{
+	if (!IsValid(DynMatInst_AmmoCounter))
+	{
+		DynMatInst_AmmoCounter = UMaterialInstanceDynamic::Create(AmmoCounterMaterial, this);
+	}
+	return DynMatInst_AmmoCounter;
 }
 
 void AWeapon::AttachToOwningPawn() const
@@ -104,18 +128,11 @@ void AWeapon::WeaponTrace(FHitResult& OutHit, float TraceLength) const
 			FCollisionShape::MakeSphere(TraceRadius),
 			QueryParams,
 			ResponseParams);
-		/*
-		DrawDebugSphereTraceSingle(
-			GetWorld(),
-			Start,
-			End,
-			TraceRadius,
-			EDrawDebugTrace::ForDuration,
-			bHit,
-			OutHit,
-			FColor::Green,
-			FColor::Red,
-			5.f); */
+
+		if (!bHit)
+		{
+			OutHit.ImpactPoint = End;
+		}
 	}
 }
 
@@ -123,7 +140,30 @@ void AWeapon::Local_Fire(const FVector& ImpactPoint, const FVector& ImpactNormal
 	TEnumAsByte<EPhysicalSurface> ImpactSurfaceType, bool bIsFirstPerson)
 {
 	FireEffects(ImpactPoint, ImpactNormal, ImpactSurfaceType, bIsFirstPerson);
-	
+
+	if (GetInstigator()->IsLocallyControlled())
+	{
+		Ammo = FMath::Clamp(Ammo - 1, 0, MagCapacity);
+		if (GetInstigator()->IsLocallyControlled() && !GetInstigator()->HasAuthority())
+		{
+			++Sequence;
+		}
+	}
+}
+
+void AWeapon::Auth_Fire()
+{
+	Ammo = FMath::Clamp(Ammo - 1, 0, MagCapacity);
+}
+
+void AWeapon::Rep_Fire(int32 AuthAmmo)
+{
+	if (GetInstigator()->IsLocallyControlled() && !GetInstigator()->HasAuthority())
+	{
+		Ammo = AuthAmmo;
+		-- Sequence;
+		Ammo -= Sequence;
+	}
 }
 
 void AWeapon::BeginPlay()

@@ -21,6 +21,9 @@ class UInputAction;
 struct FInputActionValue;
 class UCameraComponent;
 class USpringArmComponent;
+class AWeapon;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWeaponFirstReplicated, AWeapon*, Weapon, bool, bTargetingPlayer);
 /*-------------------------------------------------------------------------*/
 
 
@@ -40,11 +43,15 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
 	
 	/**	Player Interface: **/
 	virtual FName GetWeaponAttachmentPoint_Implementation(const FGameplayTag& WeaponType) const override;
 	virtual USkeletalMeshComponent* GetMesh1P_Implementation() const override;
 	virtual USkeletalMeshComponent* GetMesh3P_Implementation() const override;
+	virtual void WeaponReplicated_Implementation() override;
+	virtual AWeapon* GetCurrentWeapon_Implementation() override;
+	virtual int32 GetReserveAmmo_Implementation() const override;
 	/** ~Player Interface **/
 
 	UFUNCTION(BlueprintCallable)
@@ -55,7 +62,12 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "CYBERSCAPE|FABRIK")
 	FTransform FABRIK_SocketTransform;
+
+	UPROPERTY(BlueprintAssignable)
+	FWeaponFirstReplicated OnWeaponFirstReplicated;
 	
+	bool HasWeaponFirstReplicated() const { return bWeaponFirstReplicated; };
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void BeginDestroy() override;
@@ -64,6 +76,7 @@ protected:
 	void CalculateTurnInPlaceParameters(float DeltaTime);
 	void TurnInPlace(float DeltaTime);
 
+	bool bWeaponFirstReplicated;
 	FRotator StartingAimRotation;
 	float InterpAO_Yaw;
 

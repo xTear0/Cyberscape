@@ -58,6 +58,7 @@ AOperatorCharacter::AOperatorCharacter()
 
 	DefaultFOV = 90.0f;
 	TurningStatus = ETurningInPlace::NotTurning;
+	bWeaponFirstReplicated = false;
 }
 
 void AOperatorCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -83,6 +84,16 @@ void AOperatorCharacter::PossessedBy(AController* NewController)
 	}
 }
 
+void AOperatorCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	if (IsValid(CombatComponent))
+	{
+		CombatComponent->InitializeWeaponWidgets();
+	}
+}
+
 FName AOperatorCharacter::GetWeaponAttachmentPoint_Implementation(const FGameplayTag& WeaponType) const
 {
 	checkf(CombatComponent->WeaponData, TEXT("No Weapon Data Asset - Please fill out BP_OperatorCharacter"))
@@ -98,6 +109,25 @@ USkeletalMeshComponent* AOperatorCharacter::GetMesh1P_Implementation() const
 USkeletalMeshComponent* AOperatorCharacter::GetMesh3P_Implementation() const
 {
 	return GetMesh();
+}
+
+void AOperatorCharacter::WeaponReplicated_Implementation()
+{
+	if (!bWeaponFirstReplicated)
+	{
+		bWeaponFirstReplicated = true;
+		OnWeaponFirstReplicated.Broadcast(CombatComponent->CurrentWeapon, CombatComponent->bHitPlayer);
+	}
+}
+
+AWeapon* AOperatorCharacter::GetCurrentWeapon_Implementation()
+{
+	return CombatComponent->CurrentWeapon;
+}
+
+int32 AOperatorCharacter::GetReserveAmmo_Implementation() const
+{
+	return CombatComponent->CurrentReserveAmmo;
 }
 
 FRotator AOperatorCharacter::GetFixedAimRotation() const

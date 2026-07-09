@@ -31,7 +31,7 @@ class CYBERSCAPE_API IPlayerInterface
 {
 	// Add interface functions here:
 	GENERATED_BODY()
-public:
+public:	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	FName GetWeaponAttachmentPoint(const FGameplayTag& WeaponType) const;
 
@@ -40,6 +40,15 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	USkeletalMeshComponent* GetMesh3P() const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void WeaponReplicated();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	AWeapon* GetCurrentWeapon();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	int32 GetReserveAmmo() const;
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/
