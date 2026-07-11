@@ -34,7 +34,7 @@ void UOperaterReserveAmmo::NativeOnInitialized()
 		{
 			// Reserve Ammo amount for the current weapon, also need CurrentCeapon->Ammo.
 			OnCurrentReserveAmmoChanged(
-				IPlayerInterface::Execute_GetReserveAmmo(OperatorCharacter), Weapon->Ammo);
+				IPlayerInterface::Execute_GetReserveAmmo(OperatorCharacter), Weapon->Ammo, Weapon->WeaponIcon);
 		}
 	} else
 	{
@@ -47,7 +47,7 @@ void UOperaterReserveAmmo::NativeOnInitialized()
 		if (IsValid(Weapon))
 		{
 			OnCurrentReserveAmmoChanged(
-				IPlayerInterface::Execute_GetReserveAmmo(OperatorCharacter), Weapon->Ammo);
+				IPlayerInterface::Execute_GetReserveAmmo(OperatorCharacter), Weapon->Ammo, Weapon->WeaponIcon);
 		}
 	}
 }
@@ -72,9 +72,17 @@ void UOperaterReserveAmmo::OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn
 	}
 }
 
-void UOperaterReserveAmmo::OnCurrentReserveAmmoChanged(int32 RoundsInReserve, int32 RoundsInWeapon)
+void UOperaterReserveAmmo::OnCurrentReserveAmmoChanged(int32 RoundsInReserve, int32 RoundsInWeapon, UMaterialInterface* WeaponIconMaterial)
 {
-	// TODO: Change Weapon Icon
+	if (IsValid(WeaponIconMaterial))
+	{
+		FSlateBrush Brush;
+		Brush.SetResourceObject(WeaponIconMaterial);
+		if (IsValid(Image_WeaponIcon))
+		{
+			Image_WeaponIcon->SetBrush(Brush);
+		}
+	}
 	
 	// RoundsInWeapon / RoundsInReserve
 	if (IsValid(Text_Ammo))
@@ -98,7 +106,7 @@ void UOperaterReserveAmmo::OnWeaponFirstReplicated(AWeapon* Weapon, bool bTarget
 	AOperatorCharacter* OperatorCharacter = Cast<AOperatorCharacter>(GetOwningPlayer()->GetPawn());
 	if (!IsValid(OperatorCharacter)) return;
 	OnCurrentReserveAmmoChanged(
-		IPlayerInterface::Execute_GetReserveAmmo(OperatorCharacter), Weapon->Ammo);
+		IPlayerInterface::Execute_GetReserveAmmo(OperatorCharacter), Weapon->Ammo, Weapon->WeaponIcon);
 }
 #pragma endregion
 /*-------------------------------------------------------------------------*/

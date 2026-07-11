@@ -199,7 +199,7 @@ void UOperatorCombatComponent::OnRep_CurrentReserveAmmo()
 {
 	if (IsValid(CurrentWeapon))
 	{
-		OnCurrentWeaponReserveAmmoChanged.Broadcast(CurrentReserveAmmo, CurrentWeapon->Ammo); 
+		OnCurrentWeaponReserveAmmoChanged.Broadcast(CurrentReserveAmmo, CurrentWeapon->Ammo, CurrentWeapon->WeaponIcon); 
 	}
 }
 
@@ -216,7 +216,7 @@ void UOperatorCombatComponent::Equip(AWeapon* Weapon)
 	CurrentWeapon->AttachToOwningPawn();
 	
 	CurrentReserveAmmo = ReserveAmmo.FindChecked(CurrentWeapon->WeaponType);
-	OnCurrentWeaponReserveAmmoChanged.Broadcast(CurrentReserveAmmo, CurrentWeapon->Ammo);
+	OnCurrentWeaponReserveAmmoChanged.Broadcast(CurrentReserveAmmo, CurrentWeapon->Ammo, CurrentWeapon->WeaponIcon);
 }
 
 void UOperatorCombatComponent::SpawnInventory()

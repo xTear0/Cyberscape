@@ -30,7 +30,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRoundFired, int32, RoundsCurrent
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAimingStatusChanged, bool, bIsAiming);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTargetingPlayerStatusChanged, bool, bIsTargeting);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCurrentWeaponReserveAmmoChanged, int32, RoundsInReserve, int32, RoundsInWeapon);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FCurrentWeaponReserveAmmoChanged, int32, RoundsInReserve, int32, RoundsInWeapon, UMaterialInterface*, WeaponIconMaterial);
 /*-------------------------------------------------------------------------*/
 
 

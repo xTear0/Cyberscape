@@ -64,6 +64,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CYBERSCAPE|FireType")
 	float FireTime;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CYBERSCAPE|FireType")
+	TObjectPtr<UMaterialInterface> WeaponIcon; // TODO: Convert to dynamic material instance. I.e. enchanted guns, etc.
+	
 	UPROPERTY(EditDefaultsOnly, Category = "CYBERSCAPE|Reticle")
 	FReticleParams ReticleParams;
 	
