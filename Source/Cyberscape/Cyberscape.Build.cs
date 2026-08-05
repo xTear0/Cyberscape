@@ -8,9 +8,9 @@ public class Cyberscape : ModuleRules
 	{
      		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
      	
-     		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "PhysicsCore", "DedicatedServers", "GameplayTags" });
+     		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "PhysicsCore", "DedicatedServers", "GameplayTags", "TechyINV" });
      
-     		PrivateDependencyModuleNames.AddRange(new string[] { "GameplayTags", "Slate", "SlateCore" });
+     		PrivateDependencyModuleNames.AddRange(new string[] { "GameplayTags", "Slate", "SlateCore", "Inventory" });
      
      		// Uncomment if you are using Slate UI
      		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

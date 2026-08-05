@@ -22,7 +22,7 @@ struct FInputActionValue;
 class UCameraComponent;
 class USpringArmComponent;
 class AWeapon;
-
+class AOperatorPlayerController;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWeaponFirstReplicated, AWeapon*, Weapon, bool, bTargetingPlayer);
 /*-------------------------------------------------------------------------*/
 
@@ -44,6 +44,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
+	virtual void NotifyControllerChanged() override;
 	
 	/**	Player Interface: **/
 	virtual FName GetWeaponAttachmentPoint_Implementation(const FGameplayTag& WeaponType) const override;
@@ -66,7 +67,10 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FWeaponFirstReplicated OnWeaponFirstReplicated;
 	
-	bool HasWeaponFirstReplicated() const { return bWeaponFirstReplicated; };
+	bool HasWeaponFirstReplicated() const { return bWeaponFirstReplicated; }
+
+	UFUNCTION(BlueprintCallable, Category = "CYBERSCAPE|Combat")
+	void ReleaseCombatInput();
 
 protected:
 	virtual void BeginPlay() override;
@@ -102,6 +106,8 @@ protected:
 	void OnAim(bool bIsAiming);
 	
 private:
+
+	TWeakObjectPtr<AOperatorPlayerController> LocalPlayerController;
 	
 	void Input_CycleWeapon();
 	void Input_FireWeapon_Pressed();

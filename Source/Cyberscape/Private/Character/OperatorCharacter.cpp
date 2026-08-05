@@ -9,6 +9,7 @@
 #include "Data/WeaponData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Player/OperatorPlayerController.h"
 #include "Weapon/Weapon.h"
 /*-------------------------------------------------------------------------*/
 
@@ -82,6 +83,8 @@ void AOperatorCharacter::PossessedBy(AController* NewController)
 	{
 		CombatComponent->SpawnInventory();
 	}
+
+	LocalPlayerController = Cast<AOperatorPlayerController>(GetController());
 }
 
 void AOperatorCharacter::OnRep_PlayerState()
@@ -92,6 +95,12 @@ void AOperatorCharacter::OnRep_PlayerState()
 	{
 		CombatComponent->InitializeWeaponWidgets();
 	}
+}
+
+void AOperatorCharacter::NotifyControllerChanged()
+{
+	Super::NotifyControllerChanged();
+	LocalPlayerController = Cast<AOperatorPlayerController>(GetController());
 }
 
 FName AOperatorCharacter::GetWeaponAttachmentPoint_Implementation(const FGameplayTag& WeaponType) const
@@ -144,12 +153,18 @@ FRotator AOperatorCharacter::GetFixedAimRotation() const
 
 void AOperatorCharacter::Input_CycleWeapon()
 {
-	CombatComponent->Initiate_CycleWeapon();
+	if (AOperatorPlayerController* PC = LocalPlayerController.Get(); PC && !PC->IsInventoryOpen())
+	{
+		CombatComponent->Initiate_CycleWeapon();
+	}
 }
 
 void AOperatorCharacter::Input_FireWeapon_Pressed()
 {
-	CombatComponent->Initiate_FireWeapon_Pressed();
+	if (AOperatorPlayerController* PC = LocalPlayerController.Get(); PC && !PC->IsInventoryOpen())
+	{
+		CombatComponent->Initiate_FireWeapon_Pressed();
+	}
 }
 
 void AOperatorCharacter::Input_FireWeapon_Released()
@@ -159,13 +174,19 @@ void AOperatorCharacter::Input_FireWeapon_Released()
 
 void AOperatorCharacter::Input_ReloadWeapon()
 {
-	CombatComponent->Initiate_ReloadWeapon();
+	if (AOperatorPlayerController* PC = LocalPlayerController.Get(); PC && !PC->IsInventoryOpen())
+	{
+		CombatComponent->Initiate_ReloadWeapon();		
+	}
 }
 
 void AOperatorCharacter::Input_Aim_Pressed()
 {
-	CombatComponent->Initiate_Aim_Pressed();
-	OnAim(true);
+	if (AOperatorPlayerController* PC = LocalPlayerController.Get(); PC && !PC->IsInventoryOpen())
+	{
+		CombatComponent->Initiate_Aim_Pressed();
+		OnAim(true);		
+	}
 }
 
 void AOperatorCharacter::Input_Aim_Released()
@@ -177,6 +198,12 @@ void AOperatorCharacter::Input_Aim_Released()
 bool AOperatorCharacter::HasCurrentWeapon() const
 {
 	return IsValid(CombatComponent) && CombatComponent->CurrentWeapon != nullptr;
+}
+
+void AOperatorCharacter::ReleaseCombatInput()
+{
+	Input_Aim_Released();
+	Input_FireWeapon_Released();
 }
 
 void AOperatorCharacter::BeginPlay()
