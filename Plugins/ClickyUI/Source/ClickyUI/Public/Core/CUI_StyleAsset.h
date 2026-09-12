@@ -82,6 +82,28 @@ struct FCUI_Style
         { TEXT("Info"),       FLinearColor(FColor::FromHex(TEXT("809DE7"))) },
         { TEXT("InfoBg"),     FLinearColor(FColor::FromHex(TEXT("1A1D32"))) },
     };
+    
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+    TMap<FString, FLinearColor> Rarity
+    {
+        { TEXT("Common"),          FLinearColor(FColor::FromHex(TEXT("EDAB50"))) },
+        { TEXT("Common_Accent"),   FLinearColor(FColor::FromHex(TEXT("9B6725"))) },
+
+        { TEXT("Uncommon"),        FLinearColor(FColor::FromHex(TEXT("E07438"))) },
+        { TEXT("Uncommon_Accent"), FLinearColor(FColor::FromHex(TEXT("8F3D1F"))) },
+
+        { TEXT("Rare"),            FLinearColor(FColor::FromHex(TEXT("EA323C"))) },
+        { TEXT("Rare_Accent"),     FLinearColor(FColor::FromHex(TEXT("8F1E29"))) },
+
+        { TEXT("Legendary"),       FLinearColor(FColor::FromHex(TEXT("93388F"))) },
+        { TEXT("Legendary_Accent"),FLinearColor(FColor::FromHex(TEXT("5A1F5D"))) },
+
+        { TEXT("Omega"),           FLinearColor(FColor::FromHex(TEXT("5C4289"))) },
+        { TEXT("Omega_Accent"),    FLinearColor(FColor::FromHex(TEXT("33235F"))) },
+
+        { TEXT("Premium"),         FLinearColor(FColor::FromHex(TEXT("FFC825"))) },
+        { TEXT("Premium_Accent"),  FLinearColor(FColor::FromHex(TEXT("A66F00"))) },
+    };
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
     TMap<FString, FSlateSound> SoundCues

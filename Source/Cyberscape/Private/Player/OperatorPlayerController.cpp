@@ -11,6 +11,7 @@
 #include "InventoryManagement/Components/TINV_InventoryComponent.h"
 #include "Items/Components/TINV_ItemComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Notifications/CUI_NotificationManager.h"
 /*-------------------------------------------------------------------------*/
 
 
@@ -31,10 +32,13 @@ void AOperatorPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	TraceForItem();
+	if (!IsInventoryOpen())
+	{
+		TraceForItem();
+	}
 }
 
-void AOperatorPlayerController::Input_ToggleInventory()
+void AOperatorPlayerController::Input_ToggleInventory()	
 {
 	if (!InventoryComponent.IsValid()) return;
 	InventoryComponent->ToggleInventoryMenu();
@@ -90,7 +94,12 @@ void AOperatorPlayerController::OnPossess(APawn* InPawn)
 
 void AOperatorPlayerController::Input_PrimaryInteract()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Initiate_PrimaryInteract"), false);
+	if (!ThisActor.IsValid()) return;
+	
+	UTINV_ItemComponent* ItemComponent = ThisActor->FindComponentByClass<UTINV_ItemComponent>();
+	if (!IsValid(ItemComponent) || !InventoryComponent.IsValid()) return;
+	
+	InventoryComponent->TryAddItem(ItemComponent);
 }
 
 void AOperatorPlayerController::Input_Crouch()
@@ -173,7 +182,7 @@ void AOperatorPlayerController::TraceForItem()
 	ThisActor = HitResult.GetActor();
 
 	if (!ThisActor.IsValid())
-	{
+	{	
 		if (IsValid(HUDWidget)) HUDWidget->HidePickupMessagePrompt();
 	}
 

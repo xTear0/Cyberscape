@@ -1,6 +1,8 @@
 // Copyright xTear Studios
 /*-------------------------------------------------------------------------*/
 #include "InventoryManagement/Components/TINV_InventoryComponent.h"
+
+#include "Notifications/CUI_NotificationManager.h"
 #include "Widgets/Inventory/InventoryBase/TINV_InventoryBase.h"
 /*-------------------------------------------------------------------------*/
 
@@ -14,8 +16,33 @@ UTINV_InventoryComponent::UTINV_InventoryComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
+void UTINV_InventoryComponent::TryAddItem(UTINV_ItemComponent* ItemComponent)
+{
+	NoRoomInInventory.Broadcast();
+	
+	APlayerController* PC = Cast<APlayerController>(GetOwner());
+	if (UCUI_NotificationManager* Notifs = UCUI_NotificationManager::Get(PC))
+	{
+		Notifs->PostWarning(
+			NSLOCTEXT("TechyInventory", "InventoryWarning", "Inventory full."),
+			nullptr,
+			-1.f,
+			TEXT("Warn.InventoryFull"));
+	}
+}
+
 void UTINV_InventoryComponent::ToggleInventoryMenu()
 {
+	APlayerController* PC = Cast<APlayerController>(GetOwner());
+	if (UCUI_NotificationManager* Notifs = UCUI_NotificationManager::Get(PC))
+	{
+		Notifs->PostError(
+			NSLOCTEXT("TechyInventory", "Test", "Inventory Toggled."),
+			nullptr,
+			-1.f,
+			TEXT("Error.InventoryOpen"));
+	}
+	
 	if (bInventoryMenuOpen)
 	{
 		CloseInventoryMenu();
@@ -24,7 +51,6 @@ void UTINV_InventoryComponent::ToggleInventoryMenu()
 	{
 		OpenInventoryMenu();
 	}
-		
 }
 
 void UTINV_InventoryComponent::BeginPlay()
@@ -43,8 +69,6 @@ void UTINV_InventoryComponent::ConstructInventory()
 	InventoryMenu = CreateWidget<UTINV_InventoryBase>(OwningController.Get(), InventoryMenuClass);
 	InventoryMenu->AddToViewport();
 	CloseInventoryMenu();
-
-	
 }
 
 void UTINV_InventoryComponent::OpenInventoryMenu()
@@ -55,6 +79,9 @@ void UTINV_InventoryComponent::OpenInventoryMenu()
 
 	if (!OwningController.IsValid()) return;
 	FInputModeGameAndUI InputMode;
+	InputMode.SetWidgetToFocus(InventoryMenu->TakeWidget());
+	InputMode.SetHideCursorDuringCapture(false);
+	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	OwningController->SetInputMode(InputMode);
 	OwningController->SetShowMouseCursor(true);
 }

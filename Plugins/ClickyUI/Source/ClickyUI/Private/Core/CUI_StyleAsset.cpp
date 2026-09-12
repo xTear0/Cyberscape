@@ -22,6 +22,7 @@ TArray<FString> FCUI_Style::GetAllColorNames() const
     Grays.GetKeys(Temp);     Names.Append(Temp);
     Accents.GetKeys(Temp);   Names.Append(Temp);
     Semantics.GetKeys(Temp); Names.Append(Temp);
+    Rarity.GetKeys(Temp);   Names.Append(Temp);
     return Names;
 }
 
@@ -31,6 +32,7 @@ FLinearColor FCUI_Style::FindColor(const FString& Name) const
     if (const FLinearColor* C = Grays.Find(Name))     return *C;
     if (const FLinearColor* C = Accents.Find(Name))   return *C;
     if (const FLinearColor* C = Semantics.Find(Name)) return *C;
+    if (const FLinearColor* C = Rarity.Find(Name)) return *C;
     return FLinearColor::White;
 }
 

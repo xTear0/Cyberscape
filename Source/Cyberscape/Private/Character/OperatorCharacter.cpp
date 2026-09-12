@@ -9,6 +9,7 @@
 #include "Data/WeaponData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Notifications/CUI_NotificationManager.h"
 #include "Player/OperatorPlayerController.h"
 #include "Weapon/Weapon.h"
 /*-------------------------------------------------------------------------*/
@@ -161,6 +162,12 @@ void AOperatorCharacter::Input_CycleWeapon()
 
 void AOperatorCharacter::Input_FireWeapon_Pressed()
 {
+	APlayerController* PlayerC = Cast<APlayerController>(GetOwner());
+	if (UCUI_NotificationManager* Notifs = UCUI_NotificationManager::Get(PlayerC))
+	{
+		Notifs->PostInfo(NSLOCTEXT("MyGame", "WeaponFired", "Weapon fired"));
+	}
+	
 	if (AOperatorPlayerController* PC = LocalPlayerController.Get(); PC && !PC->IsInventoryOpen())
 	{
 		CombatComponent->Initiate_FireWeapon_Pressed();

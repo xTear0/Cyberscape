@@ -10,7 +10,11 @@
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
+class UTINV_InventoryItem;
 class UTINV_InventoryBase;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTINVItemChange, UTINV_InventoryItem*, Item);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTINVNoRoomInInventory);
 /*-------------------------------------------------------------------------*/
 
 
@@ -25,9 +29,16 @@ class TECHYINV_API UTINV_InventoryComponent : public UActorComponent
 
 public:
 	UTINV_InventoryComponent();
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = "TECHY|Inventory")
+	void TryAddItem(UTINV_ItemComponent* ItemComponent);
 	
 	void ToggleInventoryMenu();
 	bool IsInventoryOpen() const { return bInventoryMenuOpen; }
+
+	FTINVItemChange OnItemAdded;
+	FTINVItemChange OnItemRemoved;
+	FTINVNoRoomInInventory NoRoomInInventory;
 	
 protected:
 	virtual void BeginPlay() override;

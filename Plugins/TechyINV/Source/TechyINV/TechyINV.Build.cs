@@ -31,7 +31,8 @@ public class TechyINV : ModuleRules
 				"UMG",
 				"Slate",
 				"SlateCore",
-				"ClickyUI"
+				"ClickyUI",
+				"NetCore"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

@@ -14,7 +14,7 @@ public class ClickyUI : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"UMG",
-				"InputCore",
+				"InputCore"
 			}
 		);
 

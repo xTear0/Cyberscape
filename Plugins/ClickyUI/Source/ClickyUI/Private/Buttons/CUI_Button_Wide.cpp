@@ -11,7 +11,6 @@
 /*   Functions                                                             */
 /*-------------------------------------------------------------------------*/
 #pragma region ClickyUI_CUI_Button_Wide.cpp_Functions
-
 void UCUI_Button_Wide::NativeConstruct()
 {
     Super::NativeConstruct();
