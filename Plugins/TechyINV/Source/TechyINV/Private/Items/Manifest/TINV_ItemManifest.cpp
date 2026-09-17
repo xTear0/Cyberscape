@@ -1,20 +1,22 @@
 // Copyright xTear Studios
 /*-------------------------------------------------------------------------*/
+#include "Items/Manifest/TINV_ItemManifest.h"
 
-#include "Widgets/Inventory/Spatial/TINV_SpatialInventory.h"
-
+#include "Items/TINV_InventoryItem.h"
 /*-------------------------------------------------------------------------*/
+
 
 
 /*-------------------------------------------------------------------------*/
 /*   Functions                                                             */
 /*-------------------------------------------------------------------------*/
-#pragma region TINV_SpatialInventory.cpp_Functions
-FTINV_SlotAvailabilityResult UTINV_SpatialInventory::HasRoomForItem(UTINV_ItemComponent* ItemComponent) const
+#pragma region TINV_InventoryComponent.cpp_Functions
+UTINV_InventoryItem* FTINV_ItemManifest::Manifest(UObject* NewOuter)
 {
-	FTINV_SlotAvailabilityResult Result;
-	Result.TotalRoomToFill = 1;
-	return Result;
+	UTINV_InventoryItem* Item = NewObject<UTINV_InventoryItem>(NewOuter, UTINV_InventoryItem::StaticClass());
+	Item->SetItemManifest(*this);
+
+	return Item;
 }
 #pragma endregion
 /*-------------------------------------------------------------------------*/

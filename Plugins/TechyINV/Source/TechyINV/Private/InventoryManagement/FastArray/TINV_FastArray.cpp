@@ -4,6 +4,7 @@
 
 #include "InventoryManagement/Components/TINV_InventoryComponent.h"
 #include "Items/TINV_InventoryItem.h"
+#include "Items/Components/TINV_ItemComponent.h"
 /*-------------------------------------------------------------------------*/
 
 
@@ -46,9 +47,19 @@ void FTINV_InventoryFastArray::PostReplicatedAdd(const TArrayView<int32> AddedIn
 
 UTINV_InventoryItem* FTINV_InventoryFastArray::AddEntry(UTINV_ItemComponent* ItemComponent)
 {
-	// TODO: Do this when ItemComponent is more complete.
+	check(OwnerComponent);
+	AActor* OwningActor = OwnerComponent->GetOwner();
+	check(OwningActor->HasAuthority());
+	UTINV_InventoryComponent* IC = Cast<UTINV_InventoryComponent>(OwnerComponent);
+	if (!IsValid(IC)) return nullptr;
+
+	FTINV_InventoryEntry& NewEntry = Entries.AddDefaulted_GetRef();
+	NewEntry.Item = ItemComponent->GetItemManifest().Manifest(OwningActor);
+
+	IC->AddRepSubObj(NewEntry.Item);
+	MarkItemDirty(NewEntry);
 	
-	return nullptr;
+	return NewEntry.Item;
 }
 
 UTINV_InventoryItem* FTINV_InventoryFastArray::AddEntry(UTINV_InventoryItem* Item)

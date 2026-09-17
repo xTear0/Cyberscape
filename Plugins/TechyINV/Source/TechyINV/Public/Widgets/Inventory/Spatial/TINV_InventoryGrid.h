@@ -7,11 +7,14 @@
 /*-------------------------------------------------------------------------*/
 
 
-class UCanvasPanel;
+
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
+class UCanvasPanel;
 class UTINV_GridSlot;
+class UTINV_InventoryComponent;
+class UTINV_InventoryItem;
 /*-------------------------------------------------------------------------*/
 
 
@@ -27,11 +30,15 @@ class TECHYINV_API UTINV_InventoryGrid : public UUserWidget
 public:
 	virtual void NativeOnInitialized() override;
 
+	UFUNCTION()
+	void AddItem(UTINV_InventoryItem* Item);
 
 protected:
 
 private:
 
+	TWeakObjectPtr<UTINV_InventoryComponent> InventoryComponent;
+	
 	void ConstructGrid();
 
 	UPROPERTY()

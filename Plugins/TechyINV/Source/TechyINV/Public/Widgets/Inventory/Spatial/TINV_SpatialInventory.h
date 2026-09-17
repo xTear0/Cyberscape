@@ -24,7 +24,7 @@ class TECHYINV_API UTINV_SpatialInventory : public UTINV_InventoryBase
 	GENERATED_BODY()
 
 public:
-
+	virtual FTINV_SlotAvailabilityResult HasRoomForItem(UTINV_ItemComponent* ItemComponent) const override;
 
 protected:
 

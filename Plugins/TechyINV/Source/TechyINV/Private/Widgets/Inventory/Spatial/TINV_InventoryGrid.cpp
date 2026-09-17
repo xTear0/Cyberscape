@@ -4,6 +4,9 @@
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
+#include "InventoryManagement/Components/TINV_InventoryComponent.h"
+#include "InventoryManagement/Utils/TINV_InventoryStatics.h"
+#include "Notifications/CUI_NotificationManager.h"
 #include "Widgets/Inventory/GridSlots/TINV_GridSlot.h"
 #include "Widgets/Utils/TINV_WidgetUtils.h"
 /*-------------------------------------------------------------------------*/
@@ -18,6 +21,14 @@ void UTINV_InventoryGrid::NativeOnInitialized()
 	Super::NativeOnInitialized();
 
 	ConstructGrid();
+	InventoryComponent = UTINV_InventoryStatics::GetInventoryComponent(GetOwningPlayer());
+	InventoryComponent->OnItemAdded.AddDynamic(this, &ThisClass::AddItem);
+}
+
+void UTINV_InventoryGrid::AddItem(UTINV_InventoryItem* Item)
+{
+	UCUI_NotificationManager::PostItem(this, NSLOCTEXT("Cyberscape", "InventoryItem", "Collected item."), true);
+
 }
 
 void UTINV_InventoryGrid::ConstructGrid()

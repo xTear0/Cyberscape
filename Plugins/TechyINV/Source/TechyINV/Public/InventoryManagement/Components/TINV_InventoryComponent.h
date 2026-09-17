@@ -3,6 +3,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "InventoryManagement/FastArray/TINV_FastArray.h"
 #include "TINV_InventoryComponent.generated.h"
 /*-------------------------------------------------------------------------*/
 
@@ -12,6 +13,7 @@
 /*-------------------------------------------------------------------------*/
 class UTINV_InventoryItem;
 class UTINV_InventoryBase;
+class UTINV_ItemComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTINVItemChange, UTINV_InventoryItem*, Item);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTINVNoRoomInInventory);
@@ -30,11 +32,21 @@ class TECHYINV_API UTINV_InventoryComponent : public UActorComponent
 public:
 	UTINV_InventoryComponent();
 
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = "TECHY|Inventory")
 	void TryAddItem(UTINV_ItemComponent* ItemComponent);
+
+	UFUNCTION(Server, Reliable)
+	void Server_AddNewItem(UTINV_ItemComponent* ItemComponent, int32 StackCount);
+
+	UFUNCTION(Server, Reliable)
+	void Server_AddStacksToItem(UTINV_ItemComponent* ItemComponent, int32 StackCount, int32 Remainder);
 	
 	void ToggleInventoryMenu();
 	bool IsInventoryOpen() const { return bInventoryMenuOpen; }
+
+	void AddRepSubObj(UObject* SubObj);
 
 	FTINVItemChange OnItemAdded;
 	FTINVItemChange OnItemRemoved;
@@ -49,6 +61,9 @@ private:
 	
 	void ConstructInventory();
 
+	UPROPERTY(Replicated)
+	FTINV_InventoryFastArray InventoryList;
+	
 	UPROPERTY()
 	TObjectPtr<UTINV_InventoryBase> InventoryMenu;
 

@@ -2,37 +2,39 @@
 /*-------------------------------------------------------------------------*/
 #pragma once
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "Types/TINV_StructTypes.h"
-#include "TINV_InventoryBase.generated.h"
+#include "GameplayTagContainer.h"
+#include "StructUtils/InstancedStruct.h"
+#include "TINV_ItemManifest.generated.h"
 /*-------------------------------------------------------------------------*/
 
 
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
-class UTINV_ItemComponent;
+class UTINV_InventoryItem;
+
+USTRUCT()
+struct TECHYINV_API FTINV_ItemManifest
+{
+    GENERATED_BODY()
+    
+public:    
+    UTINV_InventoryItem* Manifest(UObject* NewOuter);
+    FGameplayTag GetItemID() const { return ItemID; }
+     
+    
+private:
+    UPROPERTY(EditAnywhere, Category = "TECHY|Inventory", meta = (Categories="CyberscapeItems"))
+    FGameplayTag ItemID;
+    
+};
 /*-------------------------------------------------------------------------*/
 
 
 /*-------------------------------------------------------------------------*/
 /*   Class Functionality                                                   */
 /*-------------------------------------------------------------------------*/
-#pragma region TINV_InventoryBase.h_Class
-UCLASS
+#pragma region TINV_ItemManifest.h_Class
 
-()
-class TECHYINV_API UTINV_InventoryBase : public UUserWidget
-{
-	GENERATED_BODY()
-
-public:
-	virtual FTINV_SlotAvailabilityResult HasRoomForItem(
-		UTINV_ItemComponent* ItemComponent) const { return FTINV_SlotAvailabilityResult(); }
-
-protected:
-
-private:
-};
 #pragma endregion
 /*-------------------------------------------------------------------------*/

@@ -23,6 +23,7 @@ enum class ECUINotificationType : uint8
     Info        UMETA(DisplayName = "Info"),
     Item        UMETA(DisplayName = "Item"),
     Warning     UMETA(DisplayName = "Warning"),
+    Success     UMETA(DisplayName = "Success"),
     Error       UMETA(DisplayName = "Error"),
     Social      UMETA(DisplayName = "Social"),
     Achievement UMETA(DisplayName = "Achievement"),

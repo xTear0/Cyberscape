@@ -14,6 +14,7 @@
 /*-------------------------------------------------------------------------*/
 class UDS_SignInOverlay;
 class UDS_DashboardOverlay;
+class UCUI_NotificationOverlay;
 /*-------------------------------------------------------------------------*/
 
 
@@ -29,6 +30,9 @@ class DEDICATEDSERVERS_API ADS_PortalHUD : public AHUD, public IDS_HUDManagement
 
 public:
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UCUI_NotificationOverlay> NotificationOverlayClass;
+	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDS_SignInOverlay> SignInOverlayClass;
 
@@ -48,6 +52,9 @@ private:
 	
 	UPROPERTY()
 	TObjectPtr<UDS_DashboardOverlay> DashboardOverlay;
+
+	UPROPERTY()
+	TObjectPtr<UCUI_NotificationOverlay> NotificationOverlay;
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/

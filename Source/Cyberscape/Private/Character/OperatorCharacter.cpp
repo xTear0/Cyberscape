@@ -162,11 +162,7 @@ void AOperatorCharacter::Input_CycleWeapon()
 
 void AOperatorCharacter::Input_FireWeapon_Pressed()
 {
-	APlayerController* PlayerC = Cast<APlayerController>(GetOwner());
-	if (UCUI_NotificationManager* Notifs = UCUI_NotificationManager::Get(PlayerC))
-	{
-		Notifs->PostInfo(NSLOCTEXT("MyGame", "WeaponFired", "Weapon fired"));
-	}
+	UCUI_NotificationManager::PostInfo(this, NSLOCTEXT("Cyberscape", "Gameplay", "Weapon Fired."), false);
 	
 	if (AOperatorPlayerController* PC = LocalPlayerController.Get(); PC && !PC->IsInventoryOpen())
 	{

@@ -38,9 +38,38 @@ public:
     UPROPERTY(BlueprintAssignable, Category = "CUI|Notifications")
     FCUIOnNotificationQueueChanged OnQueueChanged;
 
-    /*--- Gameplay-facing API ---------------------------------------------*/
+    /*--- One-line global posts -------------------------------------------*/
+    /*  Pass `this` as WorldContextObject from any actor, component, or widget.
+     *  bCoalesce merges repeats of the same message text into a counter.     */
 
-    /** Fire-and-forget entry point. Icon, lifetime, and coalescing are optional. */
+    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (WorldContext = "WorldContextObject", AdvancedDisplay = "NotifIcon, LifetimeOverride"))
+    static void PostInfo(const UObject* WorldContextObject, const FText& NotifMessage, bool bCoalesce = false, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f);
+
+    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (WorldContext = "WorldContextObject", AdvancedDisplay = "NotifIcon, LifetimeOverride"))
+    static void PostItem(const UObject* WorldContextObject, const FText& NotifMessage, bool bCoalesce = false, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f);
+
+    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (WorldContext = "WorldContextObject", AdvancedDisplay = "NotifIcon, LifetimeOverride"))
+    static void PostWarning(const UObject* WorldContextObject, const FText& NotifMessage, bool bCoalesce = false, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f);
+
+    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (WorldContext = "WorldContextObject", AdvancedDisplay = "NotifIcon, LifetimeOverride"))
+    static void PostSuccess(const UObject* WorldContextObject, const FText& NotifMessage, bool bCoalesce = false, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f);
+
+    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (WorldContext = "WorldContextObject", AdvancedDisplay = "NotifIcon, LifetimeOverride"))
+    static void PostError(const UObject* WorldContextObject, const FText& NotifMessage, bool bCoalesce = false, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f);
+
+    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (WorldContext = "WorldContextObject", AdvancedDisplay = "NotifIcon, LifetimeOverride"))
+    static void PostSocial(const UObject* WorldContextObject, const FText& NotifMessage, bool bCoalesce = false, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f);
+
+    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (WorldContext = "WorldContextObject", AdvancedDisplay = "NotifIcon, LifetimeOverride"))
+    static void PostAchievement(const UObject* WorldContextObject, const FText& NotifMessage, bool bCoalesce = false, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f);
+
+    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (WorldContext = "WorldContextObject", AdvancedDisplay = "NotifIcon, LifetimeOverride"))
+    static void PostEvent(const UObject* WorldContextObject, const FText& NotifMessage, bool bCoalesce = false, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f);
+
+    /*--- Instance API ------------------------------------------------------*/
+    /*  Use these when you need an explicit coalesce key, or to target a
+     *  specific local player (splitscreen).                                  */
+
     UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (AdvancedDisplay = "NotifIcon, LifetimeOverride, CoalesceKey"))
     void PostNotification(ECUINotificationType NotifType, const FText& NotifMessage, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f, FName CoalesceKey = NAME_None);
 
@@ -48,33 +77,20 @@ public:
     UFUNCTION(BlueprintCallable, Category = "CUI|Notifications")
     void PostNotificationPayload(const FCUINotificationPayload& Payload);
 
-    /*--- Typed conveniences ----------------------------------------------*/
+    /** Dismiss a visible notification early (e.g. player clicked it). */
+    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications")
+    void DismissNotification(int32 NotificationId);
 
-    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (AdvancedDisplay = "NotifIcon, LifetimeOverride, CoalesceKey"))
-    void PostInfo(const FText& NotifMessage, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f, FName CoalesceKey = NAME_None);
+    /*--- Queries -----------------------------------------------------------*/
 
-    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (AdvancedDisplay = "NotifIcon, LifetimeOverride, CoalesceKey"))
-    void PostItem(const FText& NotifMessage, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f, FName CoalesceKey = NAME_None);
+    /** Works from anywhere with a world context: menus, actors, components, widgets. */
+    UFUNCTION(BlueprintPure, Category = "CUI|Notifications", meta = (WorldContext = "WorldContextObject"))
+    static UCUI_NotificationManager* Get(const UObject* WorldContextObject);
 
-    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (AdvancedDisplay = "NotifIcon, LifetimeOverride, CoalesceKey"))
-    void PostWarning(const FText& NotifMessage, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f, FName CoalesceKey = NAME_None);
-
-    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (AdvancedDisplay = "NotifIcon, LifetimeOverride, CoalesceKey"))
-    void PostError(const FText& NotifMessage, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f, FName CoalesceKey = NAME_None);
-
-    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (AdvancedDisplay = "NotifIcon, LifetimeOverride, CoalesceKey"))
-    void PostSocial(const FText& NotifMessage, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f, FName CoalesceKey = NAME_None);
-
-    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (AdvancedDisplay = "NotifIcon, LifetimeOverride, CoalesceKey"))
-    void PostAchievement(const FText& NotifMessage, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f, FName CoalesceKey = NAME_None);
-
-    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (AdvancedDisplay = "NotifIcon, LifetimeOverride, CoalesceKey"))
-    void PostEvent(const FText& NotifMessage, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f, FName CoalesceKey = NAME_None);
-
-    /*----------------------------------------------------------------------*/
-    
-    UFUNCTION(BlueprintPure, Category = "CUI|Notifications")
     const TArray<FCUIActiveNotification>& GetActiveNotifications() const { return ActiveNotifications; }
+
+    UFUNCTION(BlueprintPure, Category = "CUI|Notifications")
+    int32 GetQueuedCount() const { return QueuedNotifications.Num(); }
 
     /** Baked per-type defaults. LifetimeOverride on a payload beats this. */
     UFUNCTION(BlueprintPure, Category = "CUI|Notifications")
@@ -84,12 +100,11 @@ public:
     UFUNCTION(BlueprintPure, Category = "CUI|Notifications")
     static int32 GetPriorityFor(ECUINotificationType Type);
 
-    /** Convenience accessor: UCUI_NotificationManager::Get(PC)->PostWarning(...) */
-    static UCUI_NotificationManager* Get(const APlayerController* PlayerController);
-
 protected:
 
 private:
+    static void PostStatic(const UObject* WorldContextObject, ECUINotificationType NotifType, const FText& NotifMessage, bool bCoalesce, UTexture2D* NotifIcon, float LifetimeOverride);
+
     void ActivateNotification(const FCUINotificationPayload& Payload, int32 InitialCount);
     void EnqueueNotification(const FCUINotificationPayload& Payload);
     void HandleNotificationExpired(int32 NotificationId);

@@ -1,7 +1,8 @@
 // Copyright xTear Studios
 /*-------------------------------------------------------------------------*/
 #include "Notifications/CUI_NotificationManager.h"
-#include "GameFramework/PlayerController.h"
+#include "Engine/GameInstance.h"
+#include "Engine/Engine.h"
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
@@ -22,6 +23,83 @@ void UCUI_NotificationManager::Deinitialize()
     Super::Deinitialize();
 }
 
+/*--- Static entry points --------------------------------------------------*/
+
+UCUI_NotificationManager* UCUI_NotificationManager::Get(const UObject* WorldContextObject)
+{
+    if (!IsValid(WorldContextObject) || !GEngine)
+    {
+        return nullptr;
+    }
+
+    const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
+    const UGameInstance* GameInstance = World ? World->GetGameInstance() : nullptr;
+    if (!GameInstance)
+    {
+        return nullptr;
+    }
+
+    ULocalPlayer* LocalPlayer = GameInstance->GetFirstGamePlayer();
+    return LocalPlayer ? LocalPlayer->GetSubsystem<UCUI_NotificationManager>() : nullptr;
+}
+
+void UCUI_NotificationManager::PostStatic(const UObject* WorldContextObject, const ECUINotificationType NotifType, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
+{
+    UCUI_NotificationManager* Manager = Get(WorldContextObject);
+    if (!Manager)
+    {
+        return;
+    }
+
+    // Auto-key off the message so identical text merges; distinct text stays separate.
+    const FName CoalesceKey = bCoalesce ? FName(*NotifMessage.ToString()) : NAME_None;
+
+    Manager->PostNotification(NotifType, NotifMessage, NotifIcon, LifetimeOverride, CoalesceKey);
+}
+
+void UCUI_NotificationManager::PostInfo(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
+{
+    PostStatic(WorldContextObject, ECUINotificationType::Info, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
+}
+
+void UCUI_NotificationManager::PostItem(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
+{
+    PostStatic(WorldContextObject, ECUINotificationType::Item, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
+}
+
+void UCUI_NotificationManager::PostWarning(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
+{
+    PostStatic(WorldContextObject, ECUINotificationType::Warning, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
+}
+
+void UCUI_NotificationManager::PostSuccess(const UObject* WorldContextObject, const FText& NotifMessage, bool bCoalesce,
+    UTexture2D* NotifIcon, float LifetimeOverride)
+{
+    PostStatic(WorldContextObject, ECUINotificationType::Success, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
+}
+
+void UCUI_NotificationManager::PostError(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
+{
+    PostStatic(WorldContextObject, ECUINotificationType::Error, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
+}
+
+void UCUI_NotificationManager::PostSocial(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
+{
+    PostStatic(WorldContextObject, ECUINotificationType::Social, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
+}
+
+void UCUI_NotificationManager::PostAchievement(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
+{
+    PostStatic(WorldContextObject, ECUINotificationType::Achievement, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
+}
+
+void UCUI_NotificationManager::PostEvent(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
+{
+    PostStatic(WorldContextObject, ECUINotificationType::Event, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
+}
+
+/*--- Instance API ---------------------------------------------------------*/
+
 void UCUI_NotificationManager::PostNotification(const ECUINotificationType NotifType, const FText& NotifMessage, UTexture2D* NotifIcon, const float LifetimeOverride, const FName CoalesceKey)
 {
     FCUINotificationPayload Payload;
@@ -32,41 +110,6 @@ void UCUI_NotificationManager::PostNotification(const ECUINotificationType Notif
     Payload.CoalesceKey = CoalesceKey;
 
     PostNotificationPayload(Payload);
-}
-
-void UCUI_NotificationManager::PostInfo(const FText& NotifMessage, UTexture2D* NotifIcon, const float LifetimeOverride, const FName CoalesceKey)
-{
-    PostNotification(ECUINotificationType::Info, NotifMessage, NotifIcon, LifetimeOverride, CoalesceKey);
-}
-
-void UCUI_NotificationManager::PostItem(const FText& NotifMessage, UTexture2D* NotifIcon, const float LifetimeOverride, const FName CoalesceKey)
-{
-    PostNotification(ECUINotificationType::Item, NotifMessage, NotifIcon, LifetimeOverride, CoalesceKey);
-}
-
-void UCUI_NotificationManager::PostWarning(const FText& NotifMessage, UTexture2D* NotifIcon, const float LifetimeOverride, const FName CoalesceKey)
-{
-    PostNotification(ECUINotificationType::Warning, NotifMessage, NotifIcon, LifetimeOverride, CoalesceKey);
-}
-
-void UCUI_NotificationManager::PostError(const FText& NotifMessage, UTexture2D* NotifIcon, const float LifetimeOverride, const FName CoalesceKey)
-{
-    PostNotification(ECUINotificationType::Error, NotifMessage, NotifIcon, LifetimeOverride, CoalesceKey);
-}
-
-void UCUI_NotificationManager::PostSocial(const FText& NotifMessage, UTexture2D* NotifIcon, const float LifetimeOverride, const FName CoalesceKey)
-{
-    PostNotification(ECUINotificationType::Social, NotifMessage, NotifIcon, LifetimeOverride, CoalesceKey);
-}
-
-void UCUI_NotificationManager::PostAchievement(const FText& NotifMessage, UTexture2D* NotifIcon, const float LifetimeOverride, const FName CoalesceKey)
-{
-    PostNotification(ECUINotificationType::Achievement, NotifMessage, NotifIcon, LifetimeOverride, CoalesceKey);
-}
-
-void UCUI_NotificationManager::PostEvent(const FText& NotifMessage, UTexture2D* NotifIcon, const float LifetimeOverride, const FName CoalesceKey)
-{
-    PostNotification(ECUINotificationType::Event, NotifMessage, NotifIcon, LifetimeOverride, CoalesceKey);
 }
 
 void UCUI_NotificationManager::PostNotificationPayload(const FCUINotificationPayload& Payload)
@@ -176,6 +219,11 @@ void UCUI_NotificationManager::EnqueueNotification(const FCUINotificationPayload
     OnQueueChanged.Broadcast(QueuedNotifications.Num());
 }
 
+void UCUI_NotificationManager::DismissNotification(const int32 NotificationId)
+{
+    HandleNotificationExpired(NotificationId);
+}
+
 void UCUI_NotificationManager::HandleNotificationExpired(const int32 NotificationId)
 {
     const int32 ActiveIndex = FindActiveIndexById(NotificationId);
@@ -264,17 +312,6 @@ int32 UCUI_NotificationManager::GetPriorityFor(const ECUINotificationType Type)
         case ECUINotificationType::Info:        return 60;
         default:                                return MAX_int32;
     }
-}
-
-UCUI_NotificationManager* UCUI_NotificationManager::Get(const APlayerController* PlayerController)
-{
-    if (!IsValid(PlayerController))
-    {
-        return nullptr;
-    }
-
-    const ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
-    return IsValid(LocalPlayer) ? LocalPlayer->GetSubsystem<UCUI_NotificationManager>() : nullptr;
 }
 #pragma endregion
 /*-------------------------------------------------------------------------*/

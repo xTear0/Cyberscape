@@ -2,6 +2,7 @@
 /*-------------------------------------------------------------------------*/
 #include "UI/Portal/DS_PortalHUD.h"
 #include "Blueprint/UserWidget.h"
+#include "Notifications/CUI_NotificationOverlay.h"
 #include "Player/DS_LocalPlayerSubsystem.h"
 #include "UI/Portal/Dashboard/DS_DashboardOverlay.h"
 #include "UI/Portal/SignIn/DS_SignInOverlay.h"
@@ -24,7 +25,7 @@ void ADS_PortalHUD::OnSignIn()
 	DashboardOverlay = CreateWidget<UDS_DashboardOverlay>(OwningPlayerController, DashboardOverlayClass);
 	if (IsValid(DashboardOverlay))
 	{
-		DashboardOverlay->AddToViewport();
+		DashboardOverlay->AddToViewport(10);
 	}
 }
 
@@ -39,7 +40,7 @@ void ADS_PortalHUD::OnSignOut()
 	SignInOverlay = CreateWidget<UDS_SignInOverlay>(OwningPlayerController, SignInOverlayClass);
 	if (IsValid(SignInOverlay))
 	{
-		SignInOverlay->AddToViewport();
+		SignInOverlay->AddToViewport(10);
 	}
 }
 
@@ -70,7 +71,7 @@ void ADS_PortalHUD::BeginPlay()
 		DashboardOverlay = CreateWidget<UDS_DashboardOverlay>(OwningPlayerController, DashboardOverlayClass);
 		if (IsValid(DashboardOverlay))
 		{
-			DashboardOverlay->AddToViewport();
+			DashboardOverlay->AddToViewport(10);
 			FInputModeGameAndUI InputModeData;
 			OwningPlayerController->SetInputMode(InputModeData);
 			OwningPlayerController->SetShowMouseCursor(true);
@@ -82,10 +83,19 @@ void ADS_PortalHUD::BeginPlay()
 		SignInOverlay = CreateWidget<UDS_SignInOverlay>(OwningPlayerController, SignInOverlayClass);
 		if (IsValid(SignInOverlay))
 		{
-			SignInOverlay->AddToViewport();
+			SignInOverlay->AddToViewport(10);
 			FInputModeGameAndUI InputModeData;
 			OwningPlayerController->SetInputMode(InputModeData);
 			OwningPlayerController->SetShowMouseCursor(true);
+		}
+	}
+	if (IsValid(NotificationOverlayClass))
+	{
+		APlayerController* OwningPlayerController = GetOwningPlayerController();
+		NotificationOverlay = CreateWidget<UCUI_NotificationOverlay>(OwningPlayerController, NotificationOverlayClass);
+		if (IsValid(NotificationOverlay))
+		{
+			NotificationOverlay->AddToViewport(100);
 		}
 	}
 }

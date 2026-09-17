@@ -11,6 +11,7 @@
 #include "Components/WidgetSwitcher.h"
 #include "GameplayTags/DedicatedServersTags.h"
 #include "Kismet/GameplayStatics.h"
+#include "Notifications/CUI_NotificationManager.h"
 #include "Texts/CUI_EditableTextBox.h"
 #include "UI/Portal/SignIn/DS_SignInPage.h"
 #include "UI/Portal/SignIn/DS_SignUpPage.h"
@@ -110,7 +111,7 @@ void UDS_SignInOverlay::SignInButtonClicked()
 	
 	PortalManager->SignIn(Username, Password);
 }
-
+	
 void UDS_SignInOverlay::SignUpButtonClicked()
 {
 	const FString Username = SignUpPage->TextBox_Username->GetText().ToString();

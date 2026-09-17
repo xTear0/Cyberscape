@@ -11,6 +11,7 @@
 #include "Player/DS_LocalPlayerSubsystem.h"
 #include "UI/Portal/Interfaces/DS_HUDManagement.h"
 #include "GameFramework/HUD.h"
+#include "Notifications/CUI_NotificationManager.h"
 #include "Utils/DS_ErrorUtils.h"
 /*-------------------------------------------------------------------------*/
 
@@ -22,6 +23,7 @@
 #pragma region DS_PortalManager.cpp_Functions
 void UDS_PortalManager::SignIn(const FString& Username, const FString& Password)
 {
+	UCUI_NotificationManager::PostInfo(this, NSLOCTEXT("DedicatedServers", "PortalActions", "Attempting Sign-in..."), false);
 	SignInStatusMessageDelegate.Broadcast(TEXT("Signing in..."), false, EDS_DelegateResponse::BroadcastClick);
 	
 	check(APIData);
@@ -46,6 +48,7 @@ void UDS_PortalManager::SignIn(const FString& Username, const FString& Password)
 
 void UDS_PortalManager::SignUp(const FString& Username, const FString& Password, const FString& Email)
 {
+	UCUI_NotificationManager::PostInfo(this, NSLOCTEXT("DedicatedServers", "PortalActions", "Creating New Account..."), true);
 	SignUpStatusMessageDelegate.Broadcast(TEXT("Creating New Account..."), false, EDS_DelegateResponse::BroadcastClick);
 	
 	check(APIData);
@@ -86,10 +89,12 @@ void UDS_PortalManager::SignIn_Response(FHttpRequestPtr Request, FHttpResponsePt
 	{
 		if (ContainsErrors(JsonObject))
 		{
+			UCUI_NotificationManager::PostError(this, NSLOCTEXT("DedicatedServers", "PortalActions", "Error: Sign-in Failed"), true);
 			FString Exception = UDS_ErrorUtils::GetInitiateAuthException(JsonObject);
 			SignInStatusMessageDelegate.Broadcast(Exception, true, EDS_DelegateResponse::ResponseError);
 			return;
 		}
+		UCUI_NotificationManager::PostSuccess(this, NSLOCTEXT("DedicatedServers", "PortalActions", "Sign-in Successful."), true);
 		SignInStatusMessageDelegate.Broadcast(TEXT("Sign-in Successful."), false, EDS_DelegateResponse::ResponseSuccess);
 		FDS_InitiateAuthResponse InitiateAuthResponse;
 		FJsonObjectConverter::JsonObjectToUStruct(JsonObject.ToSharedRef(), &InitiateAuthResponse);
