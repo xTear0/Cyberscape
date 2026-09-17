@@ -25,6 +25,15 @@ void UCUI_Notification::SetNotification(const FCUIActiveNotification& Entry)
 
 	Text_Message->SetText(Entry.Payload.Message);
 
+	if (Entry.Payload.Type == ECUINotificationType::Item)
+	{
+		FSlateBrush Brush;
+		Brush.SetResourceObject(Entry.Payload.IconOverride);
+		Image_Icon->SetBrush(Brush);
+
+		
+	}
+	
 	// Icon override / per-type styling / counter handled Blueprint-side.
 	OnNotificationSet(Entry);
 

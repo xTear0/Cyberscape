@@ -23,7 +23,7 @@ DECLARE_DELEGATE_OneParam(FCUIOnNotificationHideFinished, class UCUI_Notificatio
 /*   Class Functionality                                                   */
 /*-------------------------------------------------------------------------*/
 #pragma region CUI_Notification.h_Class
-UCLASS()
+    UCLASS()
 class CLICKYUI_API UCUI_Notification : public UCUI_Widget
 {
     GENERATED_BODY()

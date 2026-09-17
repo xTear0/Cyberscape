@@ -6,12 +6,37 @@
 
 
 UENUM(BlueprintType)
-enum class EInv_ItemTier : uint8
+enum class ETINV_ItemTier : uint8
 {
+	Scrap,
 	Tier1,
 	Tier2,
 	Tier3,
 	Tier4,
 	Tier5,
 	Prem
+};
+
+
+UENUM(BlueprintType)
+enum class ETINV_WeaponFireType : uint8
+{
+	Automatic,
+	Semiauto,
+	Burst,
+	BoltAction,
+	ChargeUp
+};
+
+UENUM(BlueprintType)
+enum class ETINV_WeaponDamageType : uint8
+{
+	Kinetic,
+	Energy,
+	Hazchem,
+	Atomic,
+	Missile,
+	Burn,
+	Plasma,
+	Gravity
 };

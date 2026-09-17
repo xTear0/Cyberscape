@@ -6,10 +6,11 @@
 /*-------------------------------------------------------------------------*/
 
 
+
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
-class UTexture2D;
+class UImage;
 /*-------------------------------------------------------------------------*/
 
 
@@ -41,9 +42,12 @@ struct FCUINotificationPayload
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CUI|Notification")
     FText Message;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CUI|Notification")
+    FLinearColor TextColor;
+    
     /** Optional. When null, the widget keeps its Blueprint-preset icon for this type. */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CUI|Notification")
-    TObjectPtr<UTexture2D> IconOverride{nullptr};
+    TObjectPtr<UImage> IconOverride{nullptr};
 
     /** Optional. <= 0 means "use the per-type default from ClickyUI settings". */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CUI|Notification")
