@@ -19,6 +19,7 @@ class UTINV_InventoryComponent;
 class UTINV_InventoryItem;
 class UTINV_ItemComponent;
 class UTINV_ItemDataTable;
+class UTINV_SlottedItem;
 /*-------------------------------------------------------------------------*/
 
 
@@ -47,9 +48,18 @@ private:
 	TWeakObjectPtr<UTINV_InventoryComponent> InventoryComponent;
 
 	FTINV_SlotAvailabilityResult HasRoomForItem(const UTINV_InventoryItem* Item);
-	FTINV_SlotAvailabilityResult HasRoomForItem(const FTINV_ItemManifest& Manifest);
 	void AddItemToIndicies(const FTINV_SlotAvailabilityResult& Result, UTINV_InventoryItem* NewItem);
-	
+	void AddItemAtIndex(UTINV_InventoryItem* Item, const int32 Index, const bool bStackable, const int32 StackAmount);
+	void AddSlottedItemToCanvas(const int32 Index, UTINV_SlottedItem* SlottedItem) const;
+	void UpdateGridSlots(UTINV_InventoryItem* NewItem, const int32 Index, bool bStackableItem, const int32 StackAmount);
+	bool IsIndexClaimed(const TSet<int32>& CheckedIndicies, const int32 Index) const;
+	FTINV_SlotAvailabilityResult HasRoomForItem(const FTINV_ItemManifest& Manifest, const int32 StackAmount = 1);
+	const FTINV_ItemDataDefinition* GetItemData(const FTINV_ItemManifest& ItemManifest) const;
+	bool IsSlotEmpty(const UTINV_GridSlot* GridSlot) const;
+	bool IsSameItem(const UTINV_GridSlot* GridSlot, const FGameplayTag& ItemID) const;
+	int32 GetRoomInSlot(const UTINV_GridSlot* GridSlot, const int32 MaxStackSize) const;
+	void AddSlotAvailability(FTINV_SlotAvailabilityResult& Result, const UTINV_GridSlot* GridSlot,
+		const int32 FillAmount, const bool bItemAtIndex, int32& AmountToFill) const;
 	
 	void ConstructGrid();
 
@@ -61,6 +71,12 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCanvasPanel> CanvasPanel;
+
+	UPROPERTY(EditAnywhere, Category = "TECHY|Inventory")
+	TSubclassOf<UTINV_SlottedItem> SlottedItemClass;
+
+	UPROPERTY()
+	TMap<int32, TObjectPtr<UTINV_SlottedItem>> SlottedItems;
 	
 	UPROPERTY(EditAnywhere, Category = "TECHY|Inventory")
 	int32 Rows;

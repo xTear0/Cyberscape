@@ -57,6 +57,12 @@ protected:
 
 private:
 
+	UPROPERTY(EditDefaultsOnly, Category = "TECHY|Inventory")
+	TObjectPtr<USoundBase> InventoryOpenSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "TECHY|Inventory")
+	TObjectPtr<USoundBase> InventoryCloseSound;
+	
 	TWeakObjectPtr<APlayerController> OwningController;
 	
 	void ConstructInventory();
@@ -72,7 +78,7 @@ private:
 
 	bool bInventoryMenuOpen;
 	void OpenInventoryMenu();
-	void CloseInventoryMenu();
+	void CloseInventoryMenu(bool Quiet = false);
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/

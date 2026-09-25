@@ -16,6 +16,7 @@ class UInputAction;
 struct FInputActionValue;
 class UTINV_HUDWidget;
 class UTINV_InventoryComponent;
+class UTINV_ItemDataTable;
 /*-------------------------------------------------------------------------*/
 
 
@@ -90,6 +91,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "CYBERSCAPE|Inventory")
 	TEnumAsByte<ECollisionChannel> ItemTraceChannel;
+
+	UPROPERTY(EditDefaultsOnly, Category = "TECHY|Inventory")
+	TObjectPtr<UTINV_ItemDataTable> ItemDataTable;
 
 	TWeakObjectPtr<AActor> ThisActor;
 	TWeakObjectPtr<AActor> LastActor;

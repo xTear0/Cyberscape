@@ -43,7 +43,7 @@ UCUI_NotificationManager* UCUI_NotificationManager::Get(const UObject* WorldCont
     return LocalPlayer ? LocalPlayer->GetSubsystem<UCUI_NotificationManager>() : nullptr;
 }
 
-void UCUI_NotificationManager::PostStatic(const UObject* WorldContextObject, const ECUINotificationType NotifType, const FText& NotifMessage, const bool bCoalesce, UImage* NotifIcon, const float LifetimeOverride, const FLinearColor TextColor)
+void UCUI_NotificationManager::PostStatic(const UObject* WorldContextObject, const ECUINotificationType NotifType, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride, const FLinearColor TextColor, const ECUI_ItemTier ItemTier)
 {
     UCUI_NotificationManager* Manager = Get(WorldContextObject);
     if (!Manager)
@@ -54,53 +54,53 @@ void UCUI_NotificationManager::PostStatic(const UObject* WorldContextObject, con
     // Auto-key off the message so identical text merges; distinct text stays separate.
     const FName CoalesceKey = bCoalesce ? FName(*NotifMessage.ToString()) : NAME_None;
 
-    Manager->PostNotification(NotifType, NotifMessage, NotifIcon, LifetimeOverride, CoalesceKey, TextColor);
+    Manager->PostNotification(NotifType, NotifMessage, NotifIcon, LifetimeOverride, CoalesceKey, TextColor, ItemTier);
 }
 
-void UCUI_NotificationManager::PostInfo(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UImage* NotifIcon, const float LifetimeOverride)
+void UCUI_NotificationManager::PostInfo(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
 {
     PostStatic(WorldContextObject, ECUINotificationType::Info, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
 }
 
-void UCUI_NotificationManager::PostItem(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UImage* NotifIcon, const float LifetimeOverride)
+void UCUI_NotificationManager::PostItem(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, ECUI_ItemTier ItemTier, const float LifetimeOverride)
 {
-    PostStatic(WorldContextObject, ECUINotificationType::Item, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
+    PostStatic(WorldContextObject, ECUINotificationType::Item, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride, FColor::White, ItemTier);
 }
 
-void UCUI_NotificationManager::PostWarning(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UImage* NotifIcon, const float LifetimeOverride)
+void UCUI_NotificationManager::PostWarning(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
 {
     PostStatic(WorldContextObject, ECUINotificationType::Warning, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
 }
 
 void UCUI_NotificationManager::PostSuccess(const UObject* WorldContextObject, const FText& NotifMessage, bool bCoalesce,
-    UImage* NotifIcon, float LifetimeOverride)
+    UTexture2D* NotifIcon, float LifetimeOverride)
 {
     PostStatic(WorldContextObject, ECUINotificationType::Success, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
 }
 
-void UCUI_NotificationManager::PostError(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UImage* NotifIcon, const float LifetimeOverride)
+void UCUI_NotificationManager::PostError(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
 {
     PostStatic(WorldContextObject, ECUINotificationType::Error, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
 }
 
-void UCUI_NotificationManager::PostSocial(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UImage* NotifIcon, const float LifetimeOverride)
+void UCUI_NotificationManager::PostSocial(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
 {
     PostStatic(WorldContextObject, ECUINotificationType::Social, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
 }
 
-void UCUI_NotificationManager::PostAchievement(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UImage* NotifIcon, const float LifetimeOverride)
+void UCUI_NotificationManager::PostAchievement(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
 {
     PostStatic(WorldContextObject, ECUINotificationType::Achievement, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
 }
 
-void UCUI_NotificationManager::PostEvent(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UImage* NotifIcon, const float LifetimeOverride)
+void UCUI_NotificationManager::PostEvent(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
 {
     PostStatic(WorldContextObject, ECUINotificationType::Event, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
 }
 
 /*--- Instance API ---------------------------------------------------------*/
 
-void UCUI_NotificationManager::PostNotification(const ECUINotificationType NotifType, const FText& NotifMessage, UImage* NotifIcon, const float LifetimeOverride, const FName CoalesceKey, const FLinearColor TextColor)
+void UCUI_NotificationManager::PostNotification(const ECUINotificationType NotifType, const FText& NotifMessage, UTexture2D* NotifIcon, const float LifetimeOverride, const FName CoalesceKey, const FLinearColor TextColor, const ECUI_ItemTier ItemTier)
 {
     FCUINotificationPayload Payload;
     Payload.Type = NotifType;
@@ -109,6 +109,11 @@ void UCUI_NotificationManager::PostNotification(const ECUINotificationType Notif
     Payload.IconOverride = NotifIcon;
     Payload.LifetimeOverride = LifetimeOverride;
     Payload.CoalesceKey = CoalesceKey;
+
+    if (ItemTier !=ECUI_ItemTier::None)
+    {
+        Payload.ItemTier = ItemTier;
+    }
 
     PostNotificationPayload(Payload);
 }

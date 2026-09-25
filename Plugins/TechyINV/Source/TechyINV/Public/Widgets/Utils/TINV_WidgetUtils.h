@@ -10,7 +10,8 @@
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
-
+enum class ETINV_ItemTier : uint8;
+enum class ECUI_ItemTier : uint8;
 /*-------------------------------------------------------------------------*/
 
 
@@ -25,7 +26,10 @@ class TECHYINV_API UTINV_WidgetUtils : public UBlueprintFunctionLibrary
 
 public:
 	static int32 GetIndexFromPosition(const FIntPoint& Position, const int32 Columns);
-
+	static FIntPoint GetPositionFromIndex(const int32 Index, const int32 Columns);
+	static ECUI_ItemTier GetCUIItemTier(const ETINV_ItemTier Tier);
+	static const TCHAR* GetTierColorToken(const ETINV_ItemTier Tier);
+    
 protected:
 
 private:

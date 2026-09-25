@@ -20,7 +20,45 @@
 void UCUI_StyleServiceComponent::OnPreConstruct(bool bIsDesignTime)
 {
     Super::OnPreConstruct(bIsDesignTime);
+    RefreshStyle();
+}
 
+bool UCUI_StyleServiceComponent::SetColorToken(const FString& NewToken, bool bRefresh)
+{
+    // Empty is allowed: it means "don't override color" (the widget keeps its current color).
+    if (!NewToken.IsEmpty() && !IsValidColorToken(NewToken))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("StyleServiceComponent: color token '%s' not found in style asset '%s' — keeping '%s'."),
+            *NewToken, *GetNameSafe(StyleAsset), *ColorToken);
+        return false;
+    }
+
+    ColorToken = NewToken;
+
+    if (bRefresh)
+    {
+        RefreshStyle();
+    }
+    return true;
+}
+
+void UCUI_StyleServiceComponent::SetStyleAsset(UCUI_StyleAsset* NewStyleAsset, bool bRefresh)
+{
+    StyleAsset = NewStyleAsset;
+
+    if (bRefresh)
+    {
+        RefreshStyle();
+    }
+}
+
+bool UCUI_StyleServiceComponent::IsValidColorToken(const FString& Token) const
+{
+    return IsValid(StyleAsset) && StyleAsset->HasColor(Token);
+}
+
+void UCUI_StyleServiceComponent::RefreshStyle()
+{
     if (!IsValid(StyleAsset)) return;
 
     UWidget* ComponentOwner = GetOwner().Get();
@@ -77,12 +115,6 @@ void UCUI_StyleServiceComponent::OnPreConstruct(bool bIsDesignTime)
     else if (UUserWidget* UserWidget = Cast<UUserWidget>(ComponentOwner))
     {
         if (bHasColor) UserWidget->SetColorAndOpacity(Color);
-    }
-    else if (UEditableTextBox* EditableTextBox = Cast<UEditableTextBox>(ComponentOwner))
-    {
-        // FEditableTextBoxStyle TextBoxStyle = EditableTextBox->WidgetStyle;
-        // TextBoxStyle.TextStyle.ColorAndOpacity = Color;
-        // EditableTextBox->SetWidgetStyle(TextBoxStyle);
     }
     else
     {

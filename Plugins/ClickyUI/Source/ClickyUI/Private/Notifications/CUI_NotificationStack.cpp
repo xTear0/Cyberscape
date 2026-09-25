@@ -16,7 +16,8 @@ void UCUI_NotificationStack::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
 
-    // Pre-warm one pool per mapped type so bursts don't hitch on CreateWidget.
+    // Pre-warm one pool per mapped class so bursts don't hitch on CreateWidget.
+    // TSet dedupes classes shared between the type map, the tier map and the default.
     TSet<TSubclassOf<UCUI_Notification>> ClassesToWarm;
     if (DefaultNotificationWidgetClass)
     {
@@ -29,15 +30,23 @@ void UCUI_NotificationStack::NativeOnInitialized()
             ClassesToWarm.Add(Pair.Value);
         }
     }
+    for (const TPair<ECUI_ItemTier, TSubclassOf<UCUI_Notification>>& Pair : ItemTierWidgetClasses)
+    {
+        if (Pair.Key != ECUI_ItemTier::None && Pair.Value)
+        {
+            ClassesToWarm.Add(Pair.Value);
+        }
+    }
 
     for (const TSubclassOf<UCUI_Notification>& WidgetClass : ClassesToWarm)
     {
         FCUINotificationWidgetPool& Pool = WidgetPools.FindOrAdd(WidgetClass);
         for (int32 i = 0; i < InitialPoolSizePerClass; ++i)
         {
-            UCUI_Notification* Widget = CreateWidget<UCUI_Notification>(this, WidgetClass);
-            Widget->OnHideFinished.BindUObject(this, &UCUI_NotificationStack::HandleWidgetHideFinished);
-            Pool.Widgets.Add(Widget);
+            if (UCUI_Notification* Widget = CreatePooledWidget(WidgetClass))
+            {
+                Pool.Widgets.Add(Widget);
+            }
         }
     }
 }
@@ -68,29 +77,55 @@ void UCUI_NotificationStack::NativeDestruct()
     Super::NativeDestruct();
 }
 
-TSubclassOf<UCUI_Notification> UCUI_NotificationStack::ResolveWidgetClass(const ECUINotificationType Type) const
+TSubclassOf<UCUI_Notification> UCUI_NotificationStack::ResolveWidgetClass(const ECUINotificationType Type, const ECUI_ItemTier ItemTier) const
 {
-    const TSubclassOf<UCUI_Notification>* Mapped = NotificationWidgetClasses.Find(Type);
-    return (Mapped && *Mapped) ? *Mapped : DefaultNotificationWidgetClass;
+    // 1. Rarity-specific widget.
+    if (ItemTier != ECUI_ItemTier::None)
+    {
+        const TSubclassOf<UCUI_Notification>* TierMapped = ItemTierWidgetClasses.Find(ItemTier);
+        if (TierMapped && *TierMapped)
+        {
+            return *TierMapped;
+        }
+    }
+
+    // 2. Type-specific widget.
+    const TSubclassOf<UCUI_Notification>* TypeMapped = NotificationWidgetClasses.Find(Type);
+    if (TypeMapped && *TypeMapped)
+    {
+        return *TypeMapped;
+    }
+
+    // 3. Fallback.
+    return DefaultNotificationWidgetClass;
 }
 
-UCUI_Notification* UCUI_NotificationStack::AcquireWidget(const ECUINotificationType Type)
+UCUI_Notification* UCUI_NotificationStack::CreatePooledWidget(const TSubclassOf<UCUI_Notification> WidgetClass)
 {
-    const TSubclassOf<UCUI_Notification> WidgetClass = ResolveWidgetClass(Type);
+    UCUI_Notification* Widget = CreateWidget<UCUI_Notification>(this, WidgetClass);
+    if (Widget)
+    {
+        Widget->OnHideFinished.BindUObject(this, &UCUI_NotificationStack::HandleWidgetHideFinished);
+    }
+    return Widget;
+}
+
+UCUI_Notification* UCUI_NotificationStack::AcquireWidget(const ECUINotificationType Type, const ECUI_ItemTier ItemTier)
+{
+    const TSubclassOf<UCUI_Notification> WidgetClass = ResolveWidgetClass(Type, ItemTier);
     if (!WidgetClass)
     {
         return nullptr;
     }
 
+    // Tier widgets are just classes, so they share the same per-class pooling as everything else.
     FCUINotificationWidgetPool& Pool = WidgetPools.FindOrAdd(WidgetClass);
     if (!Pool.Widgets.IsEmpty())
     {
         return Pool.Widgets.Pop();
     }
 
-    UCUI_Notification* Widget = CreateWidget<UCUI_Notification>(this, WidgetClass);
-    Widget->OnHideFinished.BindUObject(this, &UCUI_NotificationStack::HandleWidgetHideFinished);
-    return Widget;
+    return CreatePooledWidget(WidgetClass);
 }
 
 void UCUI_NotificationStack::HandleWidgetHideFinished(UCUI_Notification* Widget)
@@ -106,7 +141,7 @@ void UCUI_NotificationStack::HandleWidgetHideFinished(UCUI_Notification* Widget)
 
 void UCUI_NotificationStack::HandleNotificationActivated(const FCUIActiveNotification& Entry, const int32 InsertIndex)
 {
-    UCUI_Notification* Widget = AcquireWidget(Entry.Payload.Type);
+    UCUI_Notification* Widget = AcquireWidget(Entry.Payload.Type, Entry.Payload.ItemTier);
     if (!Widget)
     {
         return;

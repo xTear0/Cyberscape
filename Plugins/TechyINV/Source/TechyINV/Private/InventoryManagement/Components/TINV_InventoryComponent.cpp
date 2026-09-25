@@ -1,6 +1,9 @@
 // Copyright xTear Studios
 /*-------------------------------------------------------------------------*/
 #include "InventoryManagement/Components/TINV_InventoryComponent.h"
+#include "Items/TINV_InventoryItem.h"
+#include "Items/Components/TINV_ItemComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Notifications/CUI_NotificationManager.h"
 #include "Widgets/Inventory/InventoryBase/TINV_InventoryBase.h"
@@ -31,6 +34,9 @@ void UTINV_InventoryComponent::TryAddItem(UTINV_ItemComponent* ItemComponent)
 {
 	FTINV_SlotAvailabilityResult Result = InventoryMenu->HasRoomForItem(ItemComponent);
 
+	UTINV_InventoryItem* FoundItem = InventoryList.FindFirstItemByTag(ItemComponent->GetItemManifest().GetItemID());
+	Result.Item = FoundItem;
+	
 	if (Result.TotalRoomToFill == 0)
 	{
 		UCUI_NotificationManager::PostWarning(this, NSLOCTEXT("Cyberscape", "InventoryWarning", "Inventory Full."), true);
@@ -56,6 +62,7 @@ void UTINV_InventoryComponent::Server_AddNewItem_Implementation(
 	UTINV_ItemComponent* ItemComponent, int32 StackCount)
 {
 	UTINV_InventoryItem* NewItem = InventoryList.AddEntry(ItemComponent);
+	NewItem->SetTotalStackCount(StackCount);
 
 	if (GetOwner()->GetNetMode() == NM_ListenServer || GetOwner()->GetNetMode() == NM_Standalone)
 	{
@@ -68,14 +75,19 @@ void UTINV_InventoryComponent::Server_AddNewItem_Implementation(
 void UTINV_InventoryComponent::Server_AddStacksToItem_Implementation(
 	UTINV_ItemComponent* ItemComponent,	int32 StackCount, int32 Remainder)
 {
-	
+	const FGameplayTag& ItemTag = IsValid(ItemComponent) ? ItemComponent->GetItemManifest().GetItemID() : FGameplayTag::EmptyTag;
+	UTINV_InventoryItem* Item = InventoryList.FindFirstItemByTag(ItemTag);
+	if (!IsValid(Item)) return;
+
+	Item->SetTotalStackCount(Item->GetTotalStackCount() + Remainder);
+
+	// TODO: Destroy Item if Remainder == 0.
+	// Otherwise, update the stack count of the item on the ground.
 }
 
 
 void UTINV_InventoryComponent::ToggleInventoryMenu()
 {
-	UCUI_NotificationManager::PostError(this, NSLOCTEXT("Cyberscape", "InventoryError", "Inventory toggled."), true);
-	
 	if (bInventoryMenuOpen)
 	{
 		CloseInventoryMenu();
@@ -109,7 +121,7 @@ void UTINV_InventoryComponent::ConstructInventory()
 
 	InventoryMenu = CreateWidget<UTINV_InventoryBase>(OwningController.Get(), InventoryMenuClass);
 	InventoryMenu->AddToViewport();
-	CloseInventoryMenu();
+	CloseInventoryMenu(true);
 }
 
 void UTINV_InventoryComponent::OpenInventoryMenu()
@@ -125,9 +137,14 @@ void UTINV_InventoryComponent::OpenInventoryMenu()
 	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	OwningController->SetInputMode(InputMode);
 	OwningController->SetShowMouseCursor(true);
+
+	if (InventoryOpenSound)
+	{
+		UGameplayStatics::PlaySound2D(this, InventoryOpenSound);
+	}
 }
 
-void UTINV_InventoryComponent::CloseInventoryMenu()
+void UTINV_InventoryComponent::CloseInventoryMenu(bool Quiet)
 {
 	if (!IsValid(InventoryMenu)) return;
 	InventoryMenu->SetVisibility(ESlateVisibility::Collapsed);
@@ -137,6 +154,11 @@ void UTINV_InventoryComponent::CloseInventoryMenu()
 	FInputModeGameOnly InputMode;
 	OwningController->SetInputMode(InputMode);
 	OwningController->SetShowMouseCursor(false);
+
+	if (InventoryCloseSound && !Quiet)
+	{
+		UGameplayStatics::PlaySound2D(this, InventoryCloseSound);
+	}
 }
 #pragma endregion
 /*-------------------------------------------------------------------------*/

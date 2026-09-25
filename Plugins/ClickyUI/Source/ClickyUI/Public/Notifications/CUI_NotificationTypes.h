@@ -10,7 +10,7 @@
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
-class UImage;
+class UTexture2D;
 /*-------------------------------------------------------------------------*/
 
 
@@ -31,6 +31,20 @@ enum class ECUINotificationType : uint8
     Event       UMETA(DisplayName = "Event")
 };
 
+UENUM(BlueprintType)
+enum class ECUI_ItemTier : uint8
+{
+    None,
+    Scrap,
+    Tier1,
+    Tier2,
+    Tier3,
+    Tier4,
+    Tier5,
+    Prem
+};
+
+
 USTRUCT(BlueprintType)
 struct FCUINotificationPayload
 {
@@ -44,10 +58,13 @@ struct FCUINotificationPayload
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CUI|Notification")
     FLinearColor TextColor;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CUI|Notification")
+    ECUI_ItemTier ItemTier = ECUI_ItemTier::None;
     
     /** Optional. When null, the widget keeps its Blueprint-preset icon for this type. */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CUI|Notification")
-    TObjectPtr<UImage> IconOverride{nullptr};
+    TObjectPtr<UTexture2D> IconOverride{nullptr};
 
     /** Optional. <= 0 means "use the per-type default from ClickyUI settings". */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CUI|Notification")

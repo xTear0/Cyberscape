@@ -44,20 +44,26 @@ struct FTINV_ItemDataDefinition
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, Category = "TECHY|Inventory")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TECHY|Inventory")
 	FText ItemName{};
 
-	UPROPERTY(EditAnywhere, Category = "TECHY|Inventory")
-	TObjectPtr<UImage> ItemIcon{nullptr};
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TECHY|Inventory")
+	FText ItemDescription{};
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TECHY|Inventory")
+	TObjectPtr<UTexture2D> ItemIcon{nullptr};
 
 	UPROPERTY(EditAnywhere, Category = "TECHY|Inventory")
 	TSubclassOf<AActor> ItemRespawnClass{nullptr};
 
-	UPROPERTY(EditAnywhere, Category = "TECHY|Inventory")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TECHY|Inventory")
 	ETINV_ItemTier ItemTier{ETINV_ItemTier::Scrap};
 
 	UPROPERTY(EditAnywhere, Category = "TECHY|Inventory")
 	int32 ItemSellValue{0};
+
+	UPROPERTY(EditAnywhere, Category = "TECHY|Inventory")
+	int32 MaxStackSize{0};
 };
 
 USTRUCT(BlueprintType)
@@ -85,6 +91,15 @@ struct FTINV_WeaponDefaults
 };
 
 USTRUCT(BlueprintType)
+struct FTINV_ContainerDefaults
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, Category = "TECHY|Inventory")
+	int32 Rating;
+};
+
+USTRUCT(BlueprintType)
 struct FTINV_ItemWeaponDataDefinition : public FTINV_ItemDataDefinition
 {
 	GENERATED_BODY()
@@ -103,4 +118,11 @@ USTRUCT(BlueprintType)
 struct FTINV_ItemMaterialDataDefinition : public FTINV_ItemDataDefinition
 {
 	GENERATED_BODY()
+};
+
+USTRUCT(BlueprintType)
+struct FTINV_ItemContainerDataDefinition : public FTINV_ItemDataDefinition
+{
+	GENERATED_BODY()
+	
 };

@@ -1,10 +1,7 @@
 // Copyright xTear Studios
 /*-------------------------------------------------------------------------*/
-
 #include "Items/Components/TINV_ItemComponent.h"
-
 #include "Net/UnrealNetwork.h"
-
 /*-------------------------------------------------------------------------*/
 
 
@@ -15,8 +12,6 @@
 UTINV_ItemComponent::UTINV_ItemComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-
-	PickupMessage = FString("Item");
 }
 
 void UTINV_ItemComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const

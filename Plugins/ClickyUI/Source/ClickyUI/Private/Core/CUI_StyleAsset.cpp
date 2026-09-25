@@ -84,23 +84,38 @@ FCUI_Style UCUI_StyleAsset::GetStyleByName(const FString& Name) const
 
 FLinearColor UCUI_StyleAsset::GetColorByName(const FString& Name) const
 {
-    return GetActiveStyle().FindColor(Name);
+    const FCUI_Style* Style = FindActiveStyle();
+    return Style ? Style->FindColor(Name) : FLinearColor::White;
 }
 
 FSlateSound UCUI_StyleAsset::GetSoundByName(const FString& Name) const
 {
-    return GetActiveStyle().FindSound(Name);
+    const FCUI_Style* Style = FindActiveStyle();
+    return Style ? Style->FindSound(Name) : FSlateSound();
 }
 
 USoundBase* UCUI_StyleAsset::GetSoundBaseByName(const FString& Name) const
 {
-    const FSlateSound& Found = GetActiveStyle().FindSound(Name);
-    return Cast<USoundBase>(const_cast<UObject*>(Found.GetResourceObject()));
+    const FCUI_Style* Style = FindActiveStyle();
+    if (!Style) return nullptr;
+
+    const FSlateSound* Found = Style->SoundCues.Find(Name);
+    return Found ? Cast<USoundBase>(const_cast<UObject*>(Found->GetResourceObject())) : nullptr;
 }
 
 FCUI_FontFamily UCUI_StyleAsset::GetFontFamilyByName(const FString& Name) const
 {
-    return GetActiveStyle().FindFontFamily(Name);
+    const FCUI_Style* Style = FindActiveStyle();
+    return Style ? Style->FindFontFamily(Name) : FCUI_FontFamily();
+}
+
+bool UCUI_StyleAsset::HasColor(const FString& Name) const
+{
+    const FCUI_Style* Style = FindActiveStyle();
+    return Style
+        && (Style->Surfaces.Contains(Name) || Style->Grays.Contains(Name)
+         || Style->Accents.Contains(Name)  || Style->Semantics.Contains(Name)
+         || Style->Rarity.Contains(Name));
 }
 
 TArray<FString> UCUI_StyleAsset::GetStyleNames() const

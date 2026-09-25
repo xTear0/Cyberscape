@@ -27,11 +27,9 @@ public:
 	
 	UTINV_ItemComponent();
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
-	
-	FString GetPickupMessageData() const { return PickupMessage; }
 
 	FTINV_ItemManifest GetItemManifest() const { return ItemManifest; }
-	
+
 protected:
 
 
@@ -39,9 +37,6 @@ private:
 
 	UPROPERTY(Replicated, EditAnywhere, Category = "TECHY|Inventory")
 	FTINV_ItemManifest ItemManifest;
-	
-	UPROPERTY(EditAnywhere, Category = "TECHY|Inventory")
-	FString PickupMessage;
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/

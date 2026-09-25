@@ -2,9 +2,11 @@
 /*-------------------------------------------------------------------------*/
 #include "InventoryManagement/FastArray/TINV_FastArray.h"
 
+#include "ToolMenusEditor.h"
 #include "InventoryManagement/Components/TINV_InventoryComponent.h"
 #include "Items/TINV_InventoryItem.h"
 #include "Items/Components/TINV_ItemComponent.h"
+#include "Tests/ToolMenusTestUtilities.h"
 /*-------------------------------------------------------------------------*/
 
 
@@ -85,6 +87,15 @@ void FTINV_InventoryFastArray::RemoveEntry(UTINV_InventoryItem* Item)
 			MarkArrayDirty();
 		}
 	}
+}
+
+UTINV_InventoryItem* FTINV_InventoryFastArray::FindFirstItemByTag(const FGameplayTag& Item)
+{
+	auto* FoundItem = Entries.FindByPredicate([Item](const FTINV_InventoryEntry& Entry)
+	{
+		return IsValid(Entry.Item) && Entry.Item->GetItemManifest().GetItemID().MatchesTagExact(Item);
+	});
+	return FoundItem ? FoundItem->Item : nullptr;
 }
 #pragma endregion
 /*-------------------------------------------------------------------------*/

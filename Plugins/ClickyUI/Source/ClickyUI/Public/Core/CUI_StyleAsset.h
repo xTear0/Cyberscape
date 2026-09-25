@@ -192,6 +192,11 @@ public:
 
     UFUNCTION()
     TArray<FString> GetActiveFontFamilyNames() const;
+
+    const FCUI_Style* FindActiveStyle() const { return StyleLibrary.Find(ActiveTheme); }
+
+    UFUNCTION(BlueprintPure, Category="Styles")
+    bool HasColor(const FString& Name) const;
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/

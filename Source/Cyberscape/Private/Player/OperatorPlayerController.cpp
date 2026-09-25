@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interaction/TINV_Highlightable.h"
 #include "InventoryManagement/Components/TINV_InventoryComponent.h"
+#include "ItemData/TINV_ItemDataTable.h"
 #include "Items/Components/TINV_ItemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Notifications/CUI_NotificationManager.h"
@@ -65,6 +66,7 @@ void AOperatorPlayerController::BeginPlay()
 	}
 
 	InventoryComponent = FindComponentByClass<UTINV_InventoryComponent>();
+	check(ItemDataTable); // Ensure that the Item Data is available.
 	
 	CreateHUDWidget();
 }
@@ -193,11 +195,29 @@ void AOperatorPlayerController::TraceForItem()
 		{
 			ITINV_Highlightable::Execute_Highlight(Highlightable);
 		}
-			
+
 		UTINV_ItemComponent* ItemComponent = ThisActor->FindComponentByClass<UTINV_ItemComponent>();
-		if (!IsValid(ItemComponent)) return;
-		
-		if (IsValid(HUDWidget)) HUDWidget->ShowPickupMessagePrompt(ItemComponent->GetPickupMessageData());
+		if (!IsValid(ItemComponent) || !ItemDataTable) return;
+
+		const FGameplayTag ItemID = ItemComponent->GetItemManifest().GetItemID();
+
+		const FTINV_ItemDataDefinition* ItemData = ItemDataTable->GetDataByTag(ItemID);
+		if (!ItemData) return;
+
+		// CyberscapeItems.Weapons.Rifle.Sublight -> "Rifle"
+		FText ItemTypeText;
+		if (const FGameplayTag ParentTag = ItemID.RequestDirectParent(); ParentTag.IsValid())
+		{
+			FString ItemTypeString = ParentTag.ToString();
+			FString Left, Right;
+			if (ItemTypeString.Split(TEXT("."), &Left, &Right, ESearchCase::CaseSensitive, ESearchDir::FromEnd))
+			{
+				ItemTypeString = Right;
+			}
+			ItemTypeText = FText::FromString(ItemTypeString);
+		}
+
+		if (IsValid(HUDWidget)) HUDWidget->ShowPickupMessagePrompt(*ItemData, ItemTypeText);
 	}
 
 	if (LastActor.IsValid())

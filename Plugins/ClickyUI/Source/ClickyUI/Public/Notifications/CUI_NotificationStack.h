@@ -59,6 +59,13 @@ protected:
     UPROPERTY(EditAnywhere, Category = "CUI|Defaults")
     TMap<ECUINotificationType, TSubclassOf<UCUI_Notification>> NotificationWidgetClasses;
 
+    /**
+     * Per-rarity entry widgets. Checked first whenever a payload carries a tier other than None.
+     * Unlisted tiers fall back to NotificationWidgetClasses, then DefaultNotificationWidgetClass.
+     */
+    UPROPERTY(EditAnywhere, Category = "CUI|Defaults")
+    TMap<ECUI_ItemTier, TSubclassOf<UCUI_Notification>> ItemTierWidgetClasses;
+
     /** Widgets pre-created per class up front; pools grow on demand past this. */
     UPROPERTY(EditAnywhere, Category = "CUI|Defaults", meta = (ClampMin = "0"))
     int32 InitialPoolSizePerClass{3};
@@ -79,8 +86,9 @@ private:
     void HandleQueueChanged(int32 QueuedCount);
 
     /*--- Pooling ----------------------------------------------------------*/
-    TSubclassOf<UCUI_Notification> ResolveWidgetClass(ECUINotificationType Type) const;
-    UCUI_Notification* AcquireWidget(ECUINotificationType Type);
+    TSubclassOf<UCUI_Notification> ResolveWidgetClass(ECUINotificationType Type, ECUI_ItemTier ItemTier) const;
+    UCUI_Notification* AcquireWidget(ECUINotificationType Type, ECUI_ItemTier ItemTier);
+    UCUI_Notification* CreatePooledWidget(TSubclassOf<UCUI_Notification> WidgetClass);
     void HandleWidgetHideFinished(UCUI_Notification* Widget);
 
     UCUI_NotificationManager* GetManager() const;
