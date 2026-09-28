@@ -12,6 +12,7 @@
 UTINV_ItemComponent::UTINV_ItemComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+	SetIsReplicatedByDefault(true);
 }
 
 void UTINV_ItemComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -19,6 +20,11 @@ void UTINV_ItemComponent::GetLifetimeReplicatedProps(TArray<class FLifetimePrope
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, ItemManifest);
+}
+
+void UTINV_ItemComponent::InitItemManifest(FTINV_ItemManifest CopyOfManifest)
+{
+	ItemManifest = CopyOfManifest;
 }
 
 void UTINV_ItemComponent::PickedUp()

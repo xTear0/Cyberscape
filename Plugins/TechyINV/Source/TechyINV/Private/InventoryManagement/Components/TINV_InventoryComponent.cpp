@@ -1,6 +1,8 @@
 // Copyright xTear Studios
 /*-------------------------------------------------------------------------*/
 #include "InventoryManagement/Components/TINV_InventoryComponent.h"
+
+#include "ItemData/TINV_ItemDataTable.h"
 #include "Items/TINV_InventoryItem.h"
 #include "Items/Components/TINV_ItemComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -58,6 +60,12 @@ void UTINV_InventoryComponent::TryAddItem(UTINV_ItemComponent* ItemComponent)
 	// TODO: Actually add the item to the inventory.
 }
 
+void UTINV_InventoryComponent::GridTryDropItem(const bool bDropAll)
+{
+	if (!bInventoryMenuOpen) return;
+	OnDropRequested.Broadcast(bDropAll);
+}
+
 void UTINV_InventoryComponent::Server_AddNewItem_Implementation(
 	UTINV_ItemComponent* ItemComponent, int32 StackCount)
 {
@@ -92,6 +100,42 @@ void UTINV_InventoryComponent::Server_AddStacksToItem_Implementation(
 }
 
 
+void UTINV_InventoryComponent::Server_DropItem_Implementation(UTINV_InventoryItem* Item, int32 StackCount)
+{
+	if (!IsValid(Item)) return;
+	StackCount = FMath::Clamp(StackCount, 1, FMath::Max(1, Item->GetTotalStackCount()));
+	
+	const int32 NewStackCount = Item->GetTotalStackCount() - StackCount;
+	if (NewStackCount <= 0)
+	{
+		InventoryList.RemoveEntry(Item);
+	}
+	else
+	{
+		Item->SetTotalStackCount(NewStackCount);
+	}
+	SpawnDroppedItem(Item, StackCount);
+}
+
+void UTINV_InventoryComponent::SpawnDroppedItem(UTINV_InventoryItem* Item, int32 StackCount)
+{
+	const APawn* OwningPawn = OwningController->GetPawn();
+	FVector ForwardVector = OwningPawn->GetActorForwardVector();
+	FVector SpawnLocation = OwningPawn->GetActorLocation() + ForwardVector * DroppedItemSpawnDistance;
+	FRotator SpawnRotation = FRotator::ZeroRotator;
+
+	FTINV_ItemManifest DropManifest = Item->GetItemManifest();
+	DropManifest.UpdateStackCount(StackCount);
+
+	const FTINV_ItemDataDefinition* ItemData = GetItemData(DropManifest);
+	DropManifest.SpawnPickupActor(this, ItemData->ItemRespawnClass, SpawnLocation, SpawnRotation);
+}
+
+const FTINV_ItemDataDefinition* UTINV_InventoryComponent::GetItemData(const FTINV_ItemManifest& Manifest) const
+{
+	return ItemDataTable ? ItemDataTable->GetDataByTag(Manifest.GetItemID()) : nullptr;
+}
+
 void UTINV_InventoryComponent::ToggleInventoryMenu()
 {
 	if (bInventoryMenuOpen)
@@ -115,8 +159,8 @@ void UTINV_InventoryComponent::AddRepSubObj(UObject* SubObj)
 void UTINV_InventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	check(ItemDataTable)
 	ConstructInventory();
-	
 }
 
 void UTINV_InventoryComponent::ConstructInventory()

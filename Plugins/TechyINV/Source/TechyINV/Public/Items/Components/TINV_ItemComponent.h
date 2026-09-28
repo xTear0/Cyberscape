@@ -28,6 +28,7 @@ public:
 	UTINV_ItemComponent();
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
+	void InitItemManifest(FTINV_ItemManifest CopyOfManifest);
 	const FTINV_ItemManifest& GetItemManifest() const { return ItemManifest; }
 	FTINV_ItemManifest& GetItemManifestMutable() { return ItemManifest; }
 	

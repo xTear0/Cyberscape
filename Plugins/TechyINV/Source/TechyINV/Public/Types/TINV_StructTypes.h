@@ -8,6 +8,7 @@ enum class ETINV_ItemTier : uint8;
 enum class ETINV_WeaponDamageType : uint8;
 enum class ETINV_WeaponFireType : uint8;
 class UTINV_InventoryItem;
+class UTINV_InventoryGrid;
 
 
 USTRUCT()
@@ -37,6 +38,9 @@ struct FTINV_SlotAvailabilityResult
 	bool bStackable{false};
 	
 	TArray<FTINV_SlotAvailability> SlotAvailabilities;
+	
+	// Which grid this slot belongs to. Each grid only applies its own entries.
+	TWeakObjectPtr<const UTINV_InventoryGrid> Grid;
 };
 
 USTRUCT(BlueprintType)

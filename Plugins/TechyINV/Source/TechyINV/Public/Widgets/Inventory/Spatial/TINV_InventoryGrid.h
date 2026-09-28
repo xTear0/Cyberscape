@@ -41,6 +41,7 @@ public:
 
 	UFUNCTION()
 	void AddItem(UTINV_InventoryItem* Item);
+	void DropHoverItem(); // Was DropItem. For dropping what's held (e.g. clicking outside the grid).
 	void CancelDrag();
 
 protected:
@@ -75,6 +76,12 @@ private:
 	void SetSlotStackCount(int32 Index, int32 NewCount);
 	int32 GetMaxStackSize(const UTINV_InventoryItem* Item) const;
 	int32 TakeFromSlot(int32 Index, int32 Amount);
+
+	/* Dropping items */
+	UFUNCTION()
+	void OnDropRequested(bool bDropAll);
+	void DropFromSlot(int32 Index, bool bDropAll);
+	void SendDrop(UTINV_InventoryItem* Item, int32 Amount) const;
 
 	/* Right-click to split */
 	void PickUpHalf(int32 Index);

@@ -25,12 +25,16 @@ class TECHYINV_API UTINV_SpatialInventory : public UTINV_InventoryBase
 
 public:
 	virtual FTINV_SlotAvailabilityResult HasRoomForItem(UTINV_ItemComponent* ItemComponent) const override;
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 
 protected:
 
 private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTINV_InventoryGrid> InventoryGrid;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTINV_InventoryGrid> InventoryHotbar;
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/

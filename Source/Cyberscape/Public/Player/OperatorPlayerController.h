@@ -67,6 +67,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
 	TObjectPtr<UInputAction> ToggleInventoryAction;
+
+	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
+	TObjectPtr<UInputAction> ItemDropAction;
 	
 	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
 	TObjectPtr<UInputAction> MoveAction;
@@ -85,7 +88,8 @@ private:
 	void Input_Jump();
 	void Input_Move(const FInputActionValue& Value);
 	void Input_Look(const FInputActionValue& Value);
-
+	void Input_DropItem();
+	
 	void CreateHUDWidget();
 	void TraceForItem();
 

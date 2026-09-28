@@ -12,6 +12,7 @@
 #include "ItemData/TINV_ItemDataTable.h"
 #include "Items/Components/TINV_ItemComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Framework/Application/SlateApplication.h"
 #include "Notifications/CUI_NotificationManager.h"
 /*-------------------------------------------------------------------------*/
 
@@ -82,6 +83,7 @@ void AOperatorPlayerController::SetupInputComponent()
 	OperatorInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AOperatorPlayerController::Input_Look);
 	OperatorInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AOperatorPlayerController::Input_Jump);
 	OperatorInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AOperatorPlayerController::Input_Crouch);
+	OperatorInputComponent->BindAction(ItemDropAction, ETriggerEvent::Started, this, &AOperatorPlayerController::Input_DropItem);
 }
 
 void AOperatorPlayerController::OnPossess(APawn* InPawn)
@@ -152,6 +154,15 @@ void AOperatorPlayerController::Input_Look(const FInputActionValue& Value)
 	const FVector2D LookAxisVector = Value.Get<FVector2D>();
 	AddYawInput(LookAxisVector.X);
 	AddPitchInput(LookAxisVector.Y);
+}
+
+void AOperatorPlayerController::Input_DropItem()
+{
+	if (!InventoryComponent.IsValid() || !IsInventoryOpen()) return;
+
+	// Ctrl is checked here rather than as a separate input action, so rebinding the drop key keeps Ctrl+Key working.
+	const bool bDropAll = FSlateApplication::Get().GetModifierKeys().IsControlDown();
+	InventoryComponent->GridTryDropItem(bDropAll);
 }
 
 void AOperatorPlayerController::CreateHUDWidget()

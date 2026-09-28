@@ -23,6 +23,12 @@ public:
     FGameplayTag GetItemID() const { return ItemID; }
     void UpdateStackCount(const int32 NewStackCount) { StackCount = NewStackCount; }
     int32 GetStackCount() const { return StackCount; }
+
+    void SpawnPickupActor(
+        const UObject* WorldContextObject,
+        const TSubclassOf<AActor>& ItemRespawnClass,
+        const FVector& SpawnLocation,
+        const FRotator& SpawnRotation) const;
     
 private:
     UPROPERTY(EditAnywhere, Category = "TECHY|Inventory", meta = (Categories="CyberscapeItems"))

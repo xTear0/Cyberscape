@@ -17,5 +17,11 @@ FTINV_SlotAvailabilityResult UTINV_SpatialInventory::HasRoomForItem(UTINV_ItemCo
 {
 	return InventoryGrid->HasRoomForItem(ItemComponent);
 }
+
+FReply UTINV_SpatialInventory::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	InventoryGrid->DropHoverItem();
+	return FReply::Handled();
+}
 #pragma endregion
 /*-------------------------------------------------------------------------*/

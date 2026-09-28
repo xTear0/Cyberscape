@@ -32,6 +32,7 @@ void UTINV_InventoryGrid::NativeOnInitialized()
 	InventoryComponent = UTINV_InventoryStatics::GetInventoryComponent(GetOwningPlayer());
 	InventoryComponent->OnItemAdded.AddDynamic(this, &ThisClass::AddItem);
 	InventoryComponent->OnStackChange.AddDynamic(this, &ThisClass::AddStacks);
+	InventoryComponent->OnDropRequested.AddDynamic(this, &ThisClass::OnDropRequested);
 }
 
 void UTINV_InventoryGrid::OnGridSlotClicked(int32 GridIndex, const FPointerEvent& MouseEvent)
@@ -252,6 +253,8 @@ int32 UTINV_InventoryGrid::TakeFromSlot(const int32 Index, const int32 Amount)
 
 	return Taken;
 }
+
+
 
 void UTINV_InventoryGrid::PickUpHalf(const int32 Index)
 {
@@ -701,6 +704,49 @@ void UTINV_InventoryGrid::AddItem(UTINV_InventoryItem* Item)
 	}
 
 	AddItemToIndices(Result, Item);
+}
+
+void UTINV_InventoryGrid::OnDropRequested(const bool bDropAll)
+{
+	// Only the grid under the cursor acts, so multiple grids can all listen safely.
+	if (bIsDragging || !GridSlots.IsValidIndex(HoveredIndex)) return;
+	if (IsSlotEmpty(GridSlots[HoveredIndex])) return;
+
+	DropFromSlot(HoveredIndex, bDropAll);
+	RefreshHighlight(HoveredIndex);
+}
+
+void UTINV_InventoryGrid::DropFromSlot(const int32 Index, const bool bDropAll)
+{
+	UTINV_InventoryItem* ItemToDrop = GridSlots[Index]->GetInventoryItem().Get();
+	if (!IsValid(ItemToDrop)) return;
+
+	// Non-stackables always drop as one whole item.
+	if (!IsStackable(ItemToDrop))
+	{
+		RemoveItemFromGrid(ItemToDrop, Index);
+		SendDrop(ItemToDrop, 1);
+		return;
+	}
+
+	const int32 Requested = bDropAll ? GridSlots[Index]->GetStackCount() : 1;
+	const int32 Dropped = TakeFromSlot(Index, Requested); // Empties the slot if it was the last of them.
+	SendDrop(ItemToDrop, Dropped);
+}
+
+void UTINV_InventoryGrid::DropHoverItem()
+{
+	if (!IsValid(HoverItem) || !IsValid(HoverItem->GetInventoryItem())) return;
+
+	UTINV_InventoryItem* ItemToDrop = HoverItem->GetInventoryItem();
+	SendDrop(ItemToDrop, IsStackable(ItemToDrop) ? HoverItem->GetStackCount() : 1);
+	ClearHoverItem();
+}
+
+void UTINV_InventoryGrid::SendDrop(UTINV_InventoryItem* Item, const int32 Amount) const
+{
+	if (!InventoryComponent.IsValid() || !IsValid(Item) || Amount <= 0) return;
+	InventoryComponent->Server_DropItem(Item, Amount);
 }
 
 const FTINV_ItemDataDefinition* UTINV_InventoryGrid::GetItemData(const FTINV_ItemManifest& Manifest) const
