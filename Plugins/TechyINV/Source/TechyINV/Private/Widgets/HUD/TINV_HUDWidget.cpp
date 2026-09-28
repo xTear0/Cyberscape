@@ -3,8 +3,6 @@
 #include "Widgets/HUD/TINV_HUDWidget.h"
 #include "InventoryManagement/Components/TINV_InventoryComponent.h"
 #include "InventoryManagement/Utils/TINV_InventoryStatics.h"
-#include "Notifications/CUI_NotificationManager.h"
-#include "Notifications/CUI_TextStatusNotification.h"
 /*-------------------------------------------------------------------------*/
 
 

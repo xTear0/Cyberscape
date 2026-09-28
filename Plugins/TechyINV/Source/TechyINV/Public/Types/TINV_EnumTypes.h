@@ -58,3 +58,12 @@ enum class ETINV_WeaponDamageType : uint8
 	Plasma,
 	Gravity
 };
+
+UENUM()
+enum class ETINV_DropAction : uint8
+{
+	None,
+	Place,
+	Merge,
+	Swap
+};

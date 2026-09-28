@@ -14,12 +14,14 @@ const FTINV_ItemDataDefinition* UTINV_ItemDataTable::GetDataByTag(const FGamepla
 	static const FGameplayTag WeaponTag     = FGameplayTag::RequestGameplayTag(TEXT("CyberscapeItems.Weapon"));
 	static const FGameplayTag AttachmentTag = FGameplayTag::RequestGameplayTag(TEXT("CyberscapeItems.Attachment"));
 	static const FGameplayTag MaterialTag   = FGameplayTag::RequestGameplayTag(TEXT("CyberscapeItems.Material"));
-
+	static const FGameplayTag StrongboxTag   = FGameplayTag::RequestGameplayTag(TEXT("CyberscapeItems.Strongbox"));
+	
 	const FTINV_ItemDataDefinition* Result = nullptr;
 
 	if (Tag.MatchesTag(WeaponTag))          { Result = ItemData_Weapons.Find(Tag); }
 	else if (Tag.MatchesTag(AttachmentTag)) { Result = ItemData_Attachments.Find(Tag); }
 	else if (Tag.MatchesTag(MaterialTag))   { Result = ItemData_Materials.Find(Tag); }
+	else if (Tag.MatchesTag(StrongboxTag))   { Result = ItemData_Strongboxes.Find(Tag); }
 
 	if (!Result)
 	{

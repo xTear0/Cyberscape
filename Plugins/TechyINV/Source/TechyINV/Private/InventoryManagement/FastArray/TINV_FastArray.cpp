@@ -56,7 +56,7 @@ UTINV_InventoryItem* FTINV_InventoryFastArray::AddEntry(UTINV_ItemComponent* Ite
 	if (!IsValid(IC)) return nullptr;
 
 	FTINV_InventoryEntry& NewEntry = Entries.AddDefaulted_GetRef();
-	NewEntry.Item = ItemComponent->GetItemManifest().Manifest(OwningActor);
+	NewEntry.Item = ItemComponent->GetItemManifestMutable().Manifest(OwningActor);
 
 	IC->AddRepSubObj(NewEntry.Item);
 	MarkItemDirty(NewEntry);

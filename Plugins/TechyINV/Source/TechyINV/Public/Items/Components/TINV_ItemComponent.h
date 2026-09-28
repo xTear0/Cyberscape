@@ -28,10 +28,14 @@ public:
 	UTINV_ItemComponent();
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
-	FTINV_ItemManifest GetItemManifest() const { return ItemManifest; }
-
+	const FTINV_ItemManifest& GetItemManifest() const { return ItemManifest; }
+	FTINV_ItemManifest& GetItemManifestMutable() { return ItemManifest; }
+	
+	void PickedUp();
 protected:
 
+	UFUNCTION(BlueprintImplementableEvent, Category="TECHY|Inventory")
+	void OnPickedUp();
 
 private:
 

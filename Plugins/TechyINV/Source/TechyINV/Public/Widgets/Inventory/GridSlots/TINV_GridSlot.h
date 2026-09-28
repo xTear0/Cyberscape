@@ -26,6 +26,8 @@ enum class ETINV_GridSlotState : uint8
     Selected,
     GrayedOut
 };
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTINV_GridSlotEvent, int32, GridIndex, const FPointerEvent&, MouseEvent);
 /*-------------------------------------------------------------------------*/
 
 /*
@@ -43,6 +45,13 @@ class TECHYINV_API UTINV_GridSlot : public UUserWidget
     GENERATED_BODY()
 
 public:
+
+    FTINV_GridSlotEvent GridSlotClicked;
+    FTINV_GridSlotEvent GridSlotHovered;
+    FTINV_GridSlotEvent GridSlotUnHovered;
+    FTINV_GridSlotEvent GridSlotDoubleClicked;
+
+    void RestoreTexture();
     void SetTileIndex(int32 Index) { TileIndex = Index; }
     int32 GetTileIndex() const { return TileIndex; }
     ETINV_GridSlotState GetGridSlotState() const { return GridSlotState; }
@@ -62,6 +71,11 @@ public:
 
 protected:
     virtual void NativeOnInitialized() override;
+    virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+    virtual FReply NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+    virtual void NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+    virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent) override;
+
 
 private:
     
@@ -71,7 +85,8 @@ private:
 
     
     ETINV_GridSlotState GridSlotState = ETINV_GridSlotState::Unoccupied;
-
+    ETINV_ItemTier CachedTier = ETINV_ItemTier::Scrap;
+    
     UPROPERTY(meta = (BindWidget))
     TObjectPtr<UImage> Image_GridSlot;
 

@@ -11,7 +11,6 @@
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
-class UCUI_StyleAsset;
 class UImage;
 class UMaterialInstanceDynamic;
 class UMaterialInterface;
@@ -68,6 +67,7 @@ public:
     UImage* GetImageIcon() const { return Image_Icon; }
     UImage* GetImageGlint() const { return Image_Glint; }
     UImage* GetImageBackground() const { return Image_Background; }
+    UImage* GetImageBackgroundAnim() const { return Image_Background_Anim; }
     UImage* GetImageBackgroundStroke() const { return Image_BackgroundStroke; }
 
     /** Background fill token for a tier (the darker accent). Empty for None and Scrap. */
@@ -101,7 +101,7 @@ protected:
     /*   Background                                                        */
     /*---------------------------------------------------------------------*/
 
-    /** Background fill for tiers with no rarity color (None, Scrap). Empty = leave the image alone. */
+    /** Background fill for tiers with no rarity color (None, Scrap). Empty = leave the images alone. */
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CLICKY|TieredIcon|Background", meta = (GetOptions = "GetColorTokenOptions"))
     FString FallbackBackgroundToken = TEXT("Surface/Raised");
 
@@ -133,8 +133,11 @@ private:
     void ApplyBackground();
     UMaterialInstanceDynamic* GetGlintMID();
 
-    /** Resolves Token (or Fallback when empty) against the style asset and tints Target. */
-    void ApplyTokenColor(UImage* Target, const FString& Token, const FString& Fallback, float OpacityScale) const;
+    /** Resolves Token (or Fallback when empty) against the style asset once and tints every target with it. */
+    void ApplyTokenColor(std::initializer_list<UImage*> Targets, const FString& Token, const FString& Fallback, float OpacityScale) const;
+
+    /** Base rarity name for a tier ("Common", "Rare", ...). Empty for None and Scrap. */
+    static FString GetTierBaseToken(ECUI_ItemTier Tier);
 
     UFUNCTION()
     TArray<FString> GetColorTokenOptions() const;
@@ -148,6 +151,10 @@ private:
 
     UPROPERTY(meta = (BindWidget))
     TObjectPtr<UImage> Image_Background;
+
+    /** Animated background layer. Tinted with the same accent token as Image_Background. */
+    UPROPERTY(meta = (BindWidget))
+    TObjectPtr<UImage> Image_Background_Anim;
 
     /** Optional outline drawn over the background. */
     UPROPERTY(meta = (BindWidgetOptional))

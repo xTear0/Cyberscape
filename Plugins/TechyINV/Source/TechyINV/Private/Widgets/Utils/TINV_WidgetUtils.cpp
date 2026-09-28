@@ -2,6 +2,8 @@
 /*-------------------------------------------------------------------------*/
 #include "Widgets/Utils/TINV_WidgetUtils.h"
 
+#include "Blueprint/SlateBlueprintLibrary.h"
+#include "Components/Widget.h"
 #include "Notifications/CUI_NotificationTypes.h"
 #include "Types/TINV_StructTypes.h"
 /*-------------------------------------------------------------------------*/
@@ -11,6 +13,21 @@
 /*   Functions                                                             */
 /*-------------------------------------------------------------------------*/
 #pragma region TINV_WidgetUtils.cpp_Functions
+FVector2D UTINV_WidgetUtils::GetWidgetPosition(UWidget* Widget)
+{
+	const FGeometry Geometry = Widget->GetCachedGeometry();
+	FVector2D PixelPos;
+	FVector2D ViewportPos;
+	
+	USlateBlueprintLibrary::LocalToViewport(
+		Widget,
+		Geometry,
+		USlateBlueprintLibrary::GetLocalTopLeft(Geometry),
+		ViewportPos,
+		PixelPos);
+	return ViewportPos;
+}
+
 int32 UTINV_WidgetUtils::GetIndexFromPosition(const FIntPoint& Position, const int32 Columns)
 {	  
 	return Position.X + Position.Y * Columns;

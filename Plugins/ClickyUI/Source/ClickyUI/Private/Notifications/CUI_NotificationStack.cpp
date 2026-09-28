@@ -5,6 +5,7 @@
 #include "Notifications/CUI_NotificationManager.h"
 #include "Notifications/CUI_NotificationCounter.h"
 #include "Components/VerticalBox.h"
+#include "Components/VerticalBoxSlot.h"
 /*-------------------------------------------------------------------------*/
 
 
@@ -149,7 +150,13 @@ void UCUI_NotificationStack::HandleNotificationActivated(const FCUIActiveNotific
 
     ActiveWidgets.Add(Entry.Id, Widget);
 
-    VerticalBox_Stack->InsertChildAt(InsertIndex, Widget);
+    if (UVerticalBoxSlot* BoxSlot = Cast<UVerticalBoxSlot>(VerticalBox_Stack->InsertChildAt(InsertIndex, Widget)))
+    {
+        BoxSlot->SetHorizontalAlignment(HAlign_Right);
+        BoxSlot->SetVerticalAlignment(VAlign_Top);
+        BoxSlot->SetSize(FSlateChildSize(ESlateSizeRule::Automatic));
+    }
+
     Widget->SetNotification(Entry);
 }
 

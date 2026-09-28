@@ -34,7 +34,8 @@ public:
 	const FTINV_ItemWeaponDataDefinition*     GetWeaponData(const FGameplayTag& Tag) const     { return ItemData_Weapons.Find(Tag); }
 	const FTINV_ItemAttachmentDataDefinition* GetAttachmentData(const FGameplayTag& Tag) const { return ItemData_Attachments.Find(Tag); }
 	const FTINV_ItemMaterialDataDefinition*   GetMaterialData(const FGameplayTag& Tag) const   { return ItemData_Materials.Find(Tag); }
-
+	const FTINV_ItemStrongboxDataDefinition*  GetContainerData(const FGameplayTag& Tag) const  { return ItemData_Strongboxes.Find(Tag); }
+	
 private:
 	UPROPERTY(EditAnywhere, Category = "TECHY|Inventory", meta=(Categories="CyberscapeItems.Weapon"))
 	TMap<FGameplayTag, FTINV_ItemWeaponDataDefinition> ItemData_Weapons;
@@ -45,6 +46,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "TECHY|Inventory", meta=(Categories="CyberscapeItems.Material"))
 	TMap<FGameplayTag, FTINV_ItemMaterialDataDefinition> ItemData_Materials;
 
+	UPROPERTY(EditAnywhere, Category = "TECHY|Inventory", meta=(Categories="CyberscapeItems.Strongbox"))
+	TMap<FGameplayTag, FTINV_ItemStrongboxDataDefinition> ItemData_Strongboxes;
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/

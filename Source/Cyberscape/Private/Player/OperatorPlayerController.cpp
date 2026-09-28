@@ -102,6 +102,7 @@ void AOperatorPlayerController::Input_PrimaryInteract()
 	if (!IsValid(ItemComponent) || !InventoryComponent.IsValid()) return;
 	
 	InventoryComponent->TryAddItem(ItemComponent);
+	HUDWidget->PressedPickupMessagePrompt();
 }
 
 void AOperatorPlayerController::Input_Crouch()
@@ -217,7 +218,7 @@ void AOperatorPlayerController::TraceForItem()
 			ItemTypeText = FText::FromString(ItemTypeString);
 		}
 
-		if (IsValid(HUDWidget)) HUDWidget->ShowPickupMessagePrompt(*ItemData, ItemTypeText);
+		if (IsValid(HUDWidget)) HUDWidget->ShowPickupMessagePrompt(*ItemData, ItemTypeText, ItemComponent->GetItemManifest().GetStackCount());
 	}
 
 	if (LastActor.IsValid())

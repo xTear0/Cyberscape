@@ -18,12 +18,11 @@ UCUI_TieredItemIcon::UCUI_TieredItemIcon(const FObjectInitializer& ObjectInitial
 {
     // Pre-seeded tiers; assign materials in the Blueprint defaults.
     // None and Scrap are left out on purpose (no glint) — add them in the editor if you want one.
-    GlintMaterials.Add(ECUI_ItemTier::Tier1, nullptr);
-    GlintMaterials.Add(ECUI_ItemTier::Tier2, nullptr);
-    GlintMaterials.Add(ECUI_ItemTier::Tier3, nullptr);
-    GlintMaterials.Add(ECUI_ItemTier::Tier4, nullptr);
-    GlintMaterials.Add(ECUI_ItemTier::Tier5, nullptr);
-    GlintMaterials.Add(ECUI_ItemTier::Prem,  nullptr);
+    for (const ECUI_ItemTier Tier : { ECUI_ItemTier::Tier1, ECUI_ItemTier::Tier2, ECUI_ItemTier::Tier3,
+                                      ECUI_ItemTier::Tier4, ECUI_ItemTier::Tier5, ECUI_ItemTier::Prem })
+    {
+        GlintMaterials.Add(Tier, nullptr);
+    }
 }
 
 void UCUI_TieredItemIcon::NativePreConstruct()
@@ -40,9 +39,7 @@ void UCUI_TieredItemIcon::NativePreConstruct()
 #endif
 
     // At runtime this re-applies whatever was set before the widget was (re)constructed.
-    ApplyIcon();
-    ApplyGlint();
-    ApplyBackground();
+    SetIconAndTier(CurrentIcon, CurrentTier);
 }
 
 void UCUI_TieredItemIcon::SetIcon(UTexture2D* Icon)
@@ -54,11 +51,9 @@ void UCUI_TieredItemIcon::SetIcon(UTexture2D* Icon)
 
 void UCUI_TieredItemIcon::SetIconAndTier(UTexture2D* Icon, ECUI_ItemTier Tier)
 {
-    CurrentIcon = Icon;
     CurrentTier = Tier;
-    ApplyIcon();
-    ApplyGlint();
     ApplyBackground();
+    SetIcon(Icon);
 }
 
 void UCUI_TieredItemIcon::SetTier(ECUI_ItemTier Tier)
@@ -96,11 +91,6 @@ void UCUI_TieredItemIcon::ApplyIcon()
 
 UMaterialInstanceDynamic* UCUI_TieredItemIcon::GetGlintMID()
 {
-    if (!Image_Glint)
-    {
-        return nullptr;
-    }
-
     const TObjectPtr<UMaterialInterface>* const Found = GlintMaterials.Find(CurrentTier);
     UMaterialInterface* const Material = Found ? Found->Get() : nullptr;
     if (!Material)
@@ -110,13 +100,11 @@ UMaterialInstanceDynamic* UCUI_TieredItemIcon::GetGlintMID()
     }
 
     // Reuse the cached MID only if it was built from this tier's material.
-    if (GlintMID && GlintMID->Parent == Material)
+    if (!GlintMID || GlintMID->Parent != Material)
     {
-        return GlintMID;
+        GlintMID = UMaterialInstanceDynamic::Create(Material, this);
+        Image_Glint->SetBrushResourceObject(GlintMID);
     }
-
-    GlintMID = UMaterialInstanceDynamic::Create(Material, this);
-    Image_Glint->SetBrushResourceObject(GlintMID);
 
     return GlintMID;
 }
@@ -153,19 +141,14 @@ void UCUI_TieredItemIcon::ApplyGlint()
 
 void UCUI_TieredItemIcon::ApplyBackground()
 {
-    // No style asset assigned: leave whatever the designer set on the brushes.
-    if (!IsValid(StyleAsset))
-    {
-        return;
-    }
-
-    ApplyTokenColor(Image_Background, GetTierColorToken(CurrentTier), FallbackBackgroundToken, BackgroundOpacity);
-    ApplyTokenColor(Image_BackgroundStroke, GetTierStrokeColorToken(CurrentTier), FallbackStrokeToken, StrokeOpacity);
+    ApplyTokenColor({ Image_Background, Image_Background_Anim }, GetTierColorToken(CurrentTier), FallbackBackgroundToken, BackgroundOpacity);
+    ApplyTokenColor({ Image_BackgroundStroke }, GetTierStrokeColorToken(CurrentTier), FallbackStrokeToken, StrokeOpacity);
 }
 
-void UCUI_TieredItemIcon::ApplyTokenColor(UImage* Target, const FString& Token, const FString& Fallback, float OpacityScale) const
+void UCUI_TieredItemIcon::ApplyTokenColor(std::initializer_list<UImage*> Targets, const FString& Token, const FString& Fallback, float OpacityScale) const
 {
-    if (!Target || !IsValid(StyleAsset))
+    // No style asset assigned: leave whatever the designer set on the brushes.
+    if (!IsValid(StyleAsset))
     {
         return;
     }
@@ -179,24 +162,16 @@ void UCUI_TieredItemIcon::ApplyTokenColor(UImage* Target, const FString& Token, 
     FLinearColor Color = StyleAsset->GetColorByName(Resolved);
     Color.A *= OpacityScale;
 
-    Target->SetColorAndOpacity(Color);
-}
-
-FString UCUI_TieredItemIcon::GetTierColorToken(ECUI_ItemTier Tier)
-{
-    switch (Tier)
+    for (UImage* const Target : Targets)
     {
-        case ECUI_ItemTier::Tier1: return TEXT("Common_Accent");
-        case ECUI_ItemTier::Tier2: return TEXT("Uncommon_Accent");
-        case ECUI_ItemTier::Tier3: return TEXT("Rare_Accent");
-        case ECUI_ItemTier::Tier4: return TEXT("Legendary_Accent");
-        case ECUI_ItemTier::Tier5: return TEXT("Omega_Accent");
-        case ECUI_ItemTier::Prem:  return TEXT("Premium_Accent");
-        default:                   return FString();
+        if (Target)
+        {
+            Target->SetColorAndOpacity(Color);
+        }
     }
 }
 
-FString UCUI_TieredItemIcon::GetTierStrokeColorToken(ECUI_ItemTier Tier)
+FString UCUI_TieredItemIcon::GetTierBaseToken(ECUI_ItemTier Tier)
 {
     switch (Tier)
     {
@@ -208,6 +183,17 @@ FString UCUI_TieredItemIcon::GetTierStrokeColorToken(ECUI_ItemTier Tier)
         case ECUI_ItemTier::Prem:  return TEXT("Premium");
         default:                   return FString();
     }
+}
+
+FString UCUI_TieredItemIcon::GetTierColorToken(ECUI_ItemTier Tier)
+{
+    const FString Base = GetTierBaseToken(Tier);
+    return Base.IsEmpty() ? Base : Base + TEXT("_Accent");
+}
+
+FString UCUI_TieredItemIcon::GetTierStrokeColorToken(ECUI_ItemTier Tier)
+{
+    return GetTierBaseToken(Tier);
 }
 
 TArray<FString> UCUI_TieredItemIcon::GetColorTokenOptions() const

@@ -8,15 +8,18 @@
 /*-------------------------------------------------------------------------*/
 
 
+
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
 class UTINV_InventoryItem;
 class UTINV_InventoryBase;
 class UTINV_ItemComponent;
+struct FTINV_SlotAvailabilityResult;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTINVItemChange, UTINV_InventoryItem*, Item);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTINVNoRoomInInventory);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTINV_StackChange, const FTINV_SlotAvailabilityResult&, Result);
 /*-------------------------------------------------------------------------*/
 
 
@@ -51,6 +54,7 @@ public:
 	FTINVItemChange OnItemAdded;
 	FTINVItemChange OnItemRemoved;
 	FTINVNoRoomInInventory NoRoomInInventory;
+	FTINV_StackChange OnStackChange;
 	
 protected:
 	virtual void BeginPlay() override;

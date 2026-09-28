@@ -12,8 +12,7 @@
 void UTINV_InventoryItem::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ThisClass, TotalStackCount);
+	
 	DOREPLIFETIME(ThisClass, ItemManifest);
 }
 

@@ -33,17 +33,16 @@ public:
 	void SetItemManifest(const FTINV_ItemManifest& Manifest);
 	const FTINV_ItemManifest& GetItemManifest() const { return ItemManifest.Get<FTINV_ItemManifest>(); }
 	FTINV_ItemManifest& GetItemManifestMutable() { return ItemManifest.GetMutable<FTINV_ItemManifest>(); }
-
-	int32 GetTotalStackCount() const { return TotalStackCount; };
-	void SetTotalStackCount(int32 NewTotalStackCount) { TotalStackCount = NewTotalStackCount; };
+	
+	int32 GetTotalStackCount() const { return GetItemManifest().GetStackCount(); }
+	void SetTotalStackCount(int32 NewCount) { GetItemManifestMutable().UpdateStackCount(NewCount); }
 	
 private:
 
 	UPROPERTY(VisibleAnywhere, meta = (BaseStruct = "/Script/TechyINV.TINV_ItemManifest"), Replicated)
 	FInstancedStruct ItemManifest;
-
-	UPROPERTY(Replicated)
-	int32 TotalStackCount{0};
+	
+	int32 TotalStackCount{1};
 };
 #pragma endregion
 /*-------------------------------------------------------------------------*/

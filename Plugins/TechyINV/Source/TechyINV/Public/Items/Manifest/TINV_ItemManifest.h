@@ -21,12 +21,15 @@ struct TECHYINV_API FTINV_ItemManifest
 public:    
     UTINV_InventoryItem* Manifest(UObject* NewOuter);
     FGameplayTag GetItemID() const { return ItemID; }
-     
+    void UpdateStackCount(const int32 NewStackCount) { StackCount = NewStackCount; }
+    int32 GetStackCount() const { return StackCount; }
     
 private:
     UPROPERTY(EditAnywhere, Category = "TECHY|Inventory", meta = (Categories="CyberscapeItems"))
     FGameplayTag ItemID;
-    
+
+    UPROPERTY(EditAnywhere, Category = "TECHY|Inventory")
+    int32 StackCount{1};
 };
 /*-------------------------------------------------------------------------*/
 

@@ -20,5 +20,11 @@ void UTINV_ItemComponent::GetLifetimeReplicatedProps(TArray<class FLifetimePrope
 
 	DOREPLIFETIME(ThisClass, ItemManifest);
 }
+
+void UTINV_ItemComponent::PickedUp()
+{
+	OnPickedUp();
+	GetOwner()->Destroy();
+}
 #pragma endregion
 /*-------------------------------------------------------------------------*/

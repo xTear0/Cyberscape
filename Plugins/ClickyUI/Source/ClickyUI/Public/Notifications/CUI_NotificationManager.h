@@ -47,8 +47,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (WorldContext = "WorldContextObject", AdvancedDisplay = "NotifIcon, LifetimeOverride"))
     static void PostInfo(const UObject* WorldContextObject, const FText& NotifMessage, bool bCoalesce = false, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f);
 
+    /** Amount feeds the coalesce counter (3 arrows -> x3; +2 more -> x5). */
     UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (WorldContext = "WorldContextObject", AdvancedDisplay = "NotifIcon, LifetimeOverride"))
-    static void PostItem(const UObject* WorldContextObject, const FText& NotifMessage, bool bCoalesce = false, UTexture2D* NotifIcon = nullptr, ECUI_ItemTier ItemTier = ECUI_ItemTier::None, float LifetimeOverride = -1.f);
+    static void PostItem(const UObject* WorldContextObject, const FText& NotifMessage, bool bCoalesce = false, UTexture2D* NotifIcon = nullptr, ECUI_ItemTier ItemTier = ECUI_ItemTier::None, float LifetimeOverride = -1.f, int32 Amount = 1, const FName CoalesceKey = NAME_None);
 
     UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (WorldContext = "WorldContextObject", AdvancedDisplay = "NotifIcon, LifetimeOverride"))
     static void PostWarning(const UObject* WorldContextObject, const FText& NotifMessage, bool bCoalesce = false, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f);
@@ -72,12 +73,12 @@ public:
     /*  Use these when you need an explicit coalesce key, or to target a
      *  specific local player (splitscreen).                                  */
 
-    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (AdvancedDisplay = "NotifIcon, LifetimeOverride, CoalesceKey"))
-    void PostNotification(ECUINotificationType NotifType, const FText& NotifMessage, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f, FName CoalesceKey = NAME_None, const FLinearColor TextColor = FLinearColor::Transparent, const ECUI_ItemTier ItemTier = ECUI_ItemTier::None);
+    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (AdvancedDisplay = "NotifIcon, LifetimeOverride, CoalesceKey, Amount"))
+    void PostNotification(ECUINotificationType NotifType, const FText& NotifMessage, UTexture2D* NotifIcon = nullptr, float LifetimeOverride = -1.f, FName CoalesceKey = NAME_None, const FLinearColor TextColor = FLinearColor::Transparent, const ECUI_ItemTier ItemTier = ECUI_ItemTier::None, int32 Amount = 1);
 
     /** Full-payload entry point, for callers that build the struct themselves. */
-    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications")
-    void PostNotificationPayload(const FCUINotificationPayload& Payload);
+    UFUNCTION(BlueprintCallable, Category = "CUI|Notifications", meta = (AdvancedDisplay = "Amount"))
+    void PostNotificationPayload(const FCUINotificationPayload& Payload, int32 Amount = 1);
 
     /** Dismiss a visible notification early (e.g. player clicked it). */
     UFUNCTION(BlueprintCallable, Category = "CUI|Notifications")
@@ -105,10 +106,20 @@ public:
 protected:
 
 private:
-    static void PostStatic(const UObject* WorldContextObject, ECUINotificationType NotifType, const FText& NotifMessage, bool bCoalesce, UTexture2D* NotifIcon, float LifetimeOverride, const FLinearColor TextColor = FLinearColor::White, const ECUI_ItemTier ItemTier = ECUI_ItemTier::None);
+    static void PostStatic(
+        const UObject* WorldContextObject,
+        ECUINotificationType NotifType,
+        const FText& NotifMessage,
+        bool bCoalesce,
+        UTexture2D* NotifIcon,
+        float LifetimeOverride,
+        const FLinearColor TextColor = FLinearColor::White,
+        const ECUI_ItemTier ItemTier = ECUI_ItemTier::None,
+        int32 Amount = 1,
+        const FName CoalesceKey = NAME_None);
 
     void ActivateNotification(const FCUINotificationPayload& Payload, int32 InitialCount);
-    void EnqueueNotification(const FCUINotificationPayload& Payload);
+    void EnqueueNotification(const FCUINotificationPayload& Payload, int32 InitialCount);
     void HandleNotificationExpired(int32 NotificationId);
     void TryDequeue();
 

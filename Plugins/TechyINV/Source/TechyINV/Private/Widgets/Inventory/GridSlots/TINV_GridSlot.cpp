@@ -22,6 +22,7 @@ void UTINV_GridSlot::NativeOnInitialized()
     // One lookup per slot for its whole lifetime.
     CachedStyle_Background = FindStyleComponent(Image_GridSlot);
     CachedStyle_Stroke = FindStyleComponent(Image_GridSlotStroke);
+    SetVisibility(ESlateVisibility::Visible);
     
     UCUI_StyleServiceComponent* StyleBackground = CachedStyle_Background.Get();
     if (!StyleBackground)
@@ -45,8 +46,39 @@ void UTINV_GridSlot::NativeOnInitialized()
     {
         StyleStroke->SetStyleAsset(StyleAsset, /*bRefresh*/ false);
     }
-    
     SetUnoccupiedTexture();
+}
+
+FReply UTINV_GridSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+    Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+    GridSlotClicked.Broadcast(TileIndex, InMouseEvent);
+    return FReply::Handled();
+}
+
+FReply UTINV_GridSlot::NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+    Super::NativeOnMouseButtonDoubleClick(InGeometry, InMouseEvent);
+    GridSlotDoubleClicked.Broadcast(TileIndex, InMouseEvent);
+    return FReply::Handled();
+}
+
+void UTINV_GridSlot::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+    Super::NativeOnMouseEnter(InGeometry, InMouseEvent);
+    GridSlotHovered.Broadcast(TileIndex, InMouseEvent);
+}
+
+void UTINV_GridSlot::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
+{
+    Super::NativeOnMouseLeave(InMouseEvent);
+    GridSlotUnHovered.Broadcast(TileIndex, InMouseEvent);
+}
+
+void UTINV_GridSlot::RestoreTexture()
+{
+    if (InventoryItem.IsValid()) SetOccupiedTexture(CachedTier);
+    else SetUnoccupiedTexture();
 }
 
 void UTINV_GridSlot::SetInventoryItem(UTINV_InventoryItem* NewItem)
@@ -62,11 +94,12 @@ void UTINV_GridSlot::SetUnoccupiedTexture()
 
 void UTINV_GridSlot::SetOccupiedTexture(ETINV_ItemTier Tier)
 {
+    CachedTier = Tier;
     GridSlotState = ETINV_GridSlotState::Occupied;
-
+    
     UCUI_StyleServiceComponent* StyleBackground = CachedStyle_Background.Get();
     UCUI_StyleServiceComponent* StyleStroke = CachedStyle_Stroke.Get();
-    if (!StyleBackground && !StyleStroke) return;
+    if (!StyleBackground || !StyleStroke) return;
 
     // Scrap maps to nullptr; SetColorToken also rejects tokens missing from the asset,
     // so either case falls back to OccupiedColorToken.

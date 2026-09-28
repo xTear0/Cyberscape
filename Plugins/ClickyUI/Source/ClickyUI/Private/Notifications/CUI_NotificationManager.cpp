@@ -43,7 +43,17 @@ UCUI_NotificationManager* UCUI_NotificationManager::Get(const UObject* WorldCont
     return LocalPlayer ? LocalPlayer->GetSubsystem<UCUI_NotificationManager>() : nullptr;
 }
 
-void UCUI_NotificationManager::PostStatic(const UObject* WorldContextObject, const ECUINotificationType NotifType, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride, const FLinearColor TextColor, const ECUI_ItemTier ItemTier)
+void UCUI_NotificationManager::PostStatic(
+    const UObject* WorldContextObject,
+    const ECUINotificationType NotifType,
+    const FText& NotifMessage,
+    const bool bCoalesce,
+    UTexture2D* NotifIcon,
+    const float LifetimeOverride,
+    const FLinearColor TextColor,
+    const ECUI_ItemTier ItemTier,
+    const int32 Amount,
+    const FName CoalesceKey)
 {
     UCUI_NotificationManager* Manager = Get(WorldContextObject);
     if (!Manager)
@@ -51,10 +61,15 @@ void UCUI_NotificationManager::PostStatic(const UObject* WorldContextObject, con
         return;
     }
 
-    // Auto-key off the message so identical text merges; distinct text stays separate.
-    const FName CoalesceKey = bCoalesce ? FName(*NotifMessage.ToString()) : NAME_None;
+    FName OutCoalesceKey = NAME_None;
+    if (bCoalesce)
+    {
+        OutCoalesceKey = CoalesceKey.IsNone()
+            ? FName(*NotifMessage.ToString())
+            : CoalesceKey;
+    }
 
-    Manager->PostNotification(NotifType, NotifMessage, NotifIcon, LifetimeOverride, CoalesceKey, TextColor, ItemTier);
+    Manager->PostNotification(NotifType, NotifMessage, NotifIcon, LifetimeOverride, OutCoalesceKey, TextColor, ItemTier, Amount);
 }
 
 void UCUI_NotificationManager::PostInfo(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
@@ -62,9 +77,9 @@ void UCUI_NotificationManager::PostInfo(const UObject* WorldContextObject, const
     PostStatic(WorldContextObject, ECUINotificationType::Info, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
 }
 
-void UCUI_NotificationManager::PostItem(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, ECUI_ItemTier ItemTier, const float LifetimeOverride)
+void UCUI_NotificationManager::PostItem(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const ECUI_ItemTier ItemTier, const float LifetimeOverride, const int32 Amount, const FName CoalesceKey)
 {
-    PostStatic(WorldContextObject, ECUINotificationType::Item, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride, FColor::White, ItemTier);
+    PostStatic(WorldContextObject, ECUINotificationType::Item, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride, FLinearColor::White, ItemTier, Amount, CoalesceKey);
 }
 
 void UCUI_NotificationManager::PostWarning(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
@@ -72,8 +87,7 @@ void UCUI_NotificationManager::PostWarning(const UObject* WorldContextObject, co
     PostStatic(WorldContextObject, ECUINotificationType::Warning, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
 }
 
-void UCUI_NotificationManager::PostSuccess(const UObject* WorldContextObject, const FText& NotifMessage, bool bCoalesce,
-    UTexture2D* NotifIcon, float LifetimeOverride)
+void UCUI_NotificationManager::PostSuccess(const UObject* WorldContextObject, const FText& NotifMessage, const bool bCoalesce, UTexture2D* NotifIcon, const float LifetimeOverride)
 {
     PostStatic(WorldContextObject, ECUINotificationType::Success, NotifMessage, bCoalesce, NotifIcon, LifetimeOverride);
 }
@@ -100,7 +114,7 @@ void UCUI_NotificationManager::PostEvent(const UObject* WorldContextObject, cons
 
 /*--- Instance API ---------------------------------------------------------*/
 
-void UCUI_NotificationManager::PostNotification(const ECUINotificationType NotifType, const FText& NotifMessage, UTexture2D* NotifIcon, const float LifetimeOverride, const FName CoalesceKey, const FLinearColor TextColor, const ECUI_ItemTier ItemTier)
+void UCUI_NotificationManager::PostNotification(const ECUINotificationType NotifType, const FText& NotifMessage, UTexture2D* NotifIcon, const float LifetimeOverride, const FName CoalesceKey, const FLinearColor TextColor, const ECUI_ItemTier ItemTier, const int32 Amount)
 {
     FCUINotificationPayload Payload;
     Payload.Type = NotifType;
@@ -110,17 +124,19 @@ void UCUI_NotificationManager::PostNotification(const ECUINotificationType Notif
     Payload.LifetimeOverride = LifetimeOverride;
     Payload.CoalesceKey = CoalesceKey;
 
-    if (ItemTier !=ECUI_ItemTier::None)
+    if (ItemTier != ECUI_ItemTier::None)
     {
         Payload.ItemTier = ItemTier;
     }
 
-    PostNotificationPayload(Payload);
+    PostNotificationPayload(Payload, Amount);
 }
 
-void UCUI_NotificationManager::PostNotificationPayload(const FCUINotificationPayload& Payload)
+void UCUI_NotificationManager::PostNotificationPayload(const FCUINotificationPayload& Payload, const int32 Amount)
 {
-    // 1) Coalesce onto a visible entry: bump the counter, restart the clock.
+    const int32 AddCount = FMath::Max(1, Amount);
+
+    // 1) Coalesce onto a visible entry: add to the counter, restart the clock.
     if (!Payload.CoalesceKey.IsNone())
     {
         if (const int32* ActiveId = CoalesceKeyToActiveId.Find(Payload.CoalesceKey))
@@ -129,7 +145,7 @@ void UCUI_NotificationManager::PostNotificationPayload(const FCUINotificationPay
             if (ActiveIndex != INDEX_NONE)
             {
                 FCUIActiveNotification& Entry = ActiveNotifications[ActiveIndex];
-                Entry.Count++;
+                Entry.Count += AddCount;
                 Entry.Payload.Message = Payload.Message;
 
                 if (FTimerHandle* Handle = LifetimeTimerHandles.Find(Entry.Id))
@@ -149,7 +165,7 @@ void UCUI_NotificationManager::PostNotificationPayload(const FCUINotificationPay
         {
             if (Queued.Payload.CoalesceKey == Payload.CoalesceKey)
             {
-                Queued.Count++;
+                Queued.Count += AddCount;
                 Queued.Payload.Message = Payload.Message;
                 return;
             }
@@ -159,11 +175,11 @@ void UCUI_NotificationManager::PostNotificationPayload(const FCUINotificationPay
     // 2) Room on screen? Activate. Otherwise queue.
     if (ActiveNotifications.Num() < MaxVisibleNotifications)
     {
-        ActivateNotification(Payload, 1);
+        ActivateNotification(Payload, AddCount);
     }
     else
     {
-        EnqueueNotification(Payload);
+        EnqueueNotification(Payload, AddCount);
     }
 }
 
@@ -204,11 +220,12 @@ void UCUI_NotificationManager::ActivateNotification(const FCUINotificationPayloa
     OnNotificationActivated.Broadcast(Entry, InsertIndex);
 }
 
-void UCUI_NotificationManager::EnqueueNotification(const FCUINotificationPayload& Payload)
+void UCUI_NotificationManager::EnqueueNotification(const FCUINotificationPayload& Payload, const int32 InitialCount)
 {
     FCUIActiveNotification Queued;
     Queued.Id = INDEX_NONE; // assigned on activation
     Queued.Payload = Payload;
+    Queued.Count = InitialCount;
     Queued.Priority = GetPriorityFor(Payload.Type);
 
     int32 InsertIndex = QueuedNotifications.Num();

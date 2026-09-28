@@ -95,8 +95,8 @@ struct FTINV_ContainerDefaults
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, Category = "TECHY|Inventory")
-	int32 Rating;
+	UPROPERTY(EditAnywhere, Category = "TECHY|Inventory", meta = (ClampMin = "0", ClampMax = "3", UIMin = "0", UIMax = "3"))
+	int32 Rating{0};
 };
 
 USTRUCT(BlueprintType)
@@ -121,8 +121,25 @@ struct FTINV_ItemMaterialDataDefinition : public FTINV_ItemDataDefinition
 };
 
 USTRUCT(BlueprintType)
-struct FTINV_ItemContainerDataDefinition : public FTINV_ItemDataDefinition
+struct FTINV_ItemStrongboxDataDefinition : public FTINV_ItemDataDefinition
 {
 	GENERATED_BODY()
 	
+	UPROPERTY(EditAnywhere, Category = "TECHY|Inventory")
+	FTINV_ContainerDefaults StrongboxDefaults;
+};
+
+USTRUCT(BlueprintType)
+struct FTINV_SpaceQueryResult
+{
+	GENERATED_BODY()
+
+	// True if the space queried has no items in it.
+	bool bHasSpace{false};
+
+	// Valid if there is a single item we can swap with.
+	TWeakObjectPtr<UTINV_InventoryItem> ValidItem = nullptr;
+
+	// Index of the valid item, if there is one.
+	int32 ItemIndex{INDEX_NONE};
 };

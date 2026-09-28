@@ -47,7 +47,8 @@ public class TechyINV : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-				"ClickyUI"
+				"ClickyUI",
+				"InputCore",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

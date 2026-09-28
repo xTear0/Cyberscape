@@ -20,7 +20,6 @@ UTINV_InventoryComponent::UTINV_InventoryComponent() : InventoryList(this)
 	SetIsReplicatedByDefault(true);
 	bReplicateUsingRegisteredSubObjectList = true;
 	bInventoryMenuOpen = false;
-	
 }
 
 void UTINV_InventoryComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -47,6 +46,7 @@ void UTINV_InventoryComponent::TryAddItem(UTINV_ItemComponent* ItemComponent)
 	{
 		// Add stacks to an item that already exists in the inventory. Just update stack count.
 		// Not create a new item of this type.
+		OnStackChange.Broadcast(Result);
 		Server_AddStacksToItem(ItemComponent, Result.TotalRoomToFill, Result.Remainder);
 	}
 	else if (Result.TotalRoomToFill > 0)
@@ -69,7 +69,7 @@ void UTINV_InventoryComponent::Server_AddNewItem_Implementation(
 		OnItemAdded.Broadcast(NewItem);
 	}
 	
-	// TODO: Tell the item component to destroy its owning actor.
+	ItemComponent->PickedUp();
 }
 
 void UTINV_InventoryComponent::Server_AddStacksToItem_Implementation(
@@ -79,10 +79,16 @@ void UTINV_InventoryComponent::Server_AddStacksToItem_Implementation(
 	UTINV_InventoryItem* Item = InventoryList.FindFirstItemByTag(ItemTag);
 	if (!IsValid(Item)) return;
 
-	Item->SetTotalStackCount(Item->GetTotalStackCount() + Remainder);
+	Item->SetTotalStackCount(Item->GetTotalStackCount() + StackCount);
 
-	// TODO: Destroy Item if Remainder == 0.
-	// Otherwise, update the stack count of the item on the ground.
+	if (Remainder == 0)
+	{
+		ItemComponent->PickedUp();
+	}
+	else
+	{
+		ItemComponent->GetItemManifestMutable().UpdateStackCount(Remainder);
+	}
 }
 
 

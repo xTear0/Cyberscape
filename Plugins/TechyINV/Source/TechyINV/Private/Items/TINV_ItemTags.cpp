@@ -290,4 +290,65 @@ namespace CyberscapeItems
 			UE_DEFINE_GAMEPLAY_TAG_COMMENT(LiquidPlutonium, "CyberscapeItems.Material.Special.LiquidPlutonium", "Rare liquid fuel powering the highest-tier reactors.")
 		}
 	}
+
+	namespace Strongbox
+	{
+	    namespace Container
+	    {
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Standard_G1, "CyberscapeItems.Strongbox.Container.Standard_G1", "Standard Weapon Container [Grade 1]");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Standard_G2, "CyberscapeItems.Strongbox.Container.Standard_G2", "Standard Weapon Container [Grade 2]");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Standard_G3, "CyberscapeItems.Strongbox.Container.Standard_G3", "Standard Weapon Container [Grade 3]");
+
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Rare_G1, "CyberscapeItems.Strongbox.Container.Rare_G1", "Rare Weapon Container [Grade 1]");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Rare_G2, "CyberscapeItems.Strongbox.Container.Rare_G2", "Rare Weapon Container [Grade 2]");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Rare_G3, "CyberscapeItems.Strongbox.Container.Rare_G3", "Rare Weapon Container [Grade 3]");
+
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Premium_Rare, "CyberscapeItems.Strongbox.Container.Premium_Rare", "Premium Rare Weapon Container");
+
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Legendary_G1, "CyberscapeItems.Strongbox.Container.Legendary_G1", "Legendary Weapon Container [Grade 1]");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Legendary_G2, "CyberscapeItems.Strongbox.Container.Legendary_G2", "Legendary Weapon Container [Grade 2]");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Legendary_G3, "CyberscapeItems.Strongbox.Container.Legendary_G3", "Legendary Weapon Container [Grade 3]");
+
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Premium_Legendary, "CyberscapeItems.Strongbox.Container.Premium_Legendary", "Premium Legendary Weapon Container");
+
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Omega_G1, "CyberscapeItems.Strongbox.Container.Omega_G1", "Omega Weapon Container [Grade 1]");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Omega_G2, "CyberscapeItems.Strongbox.Container.Omega_G2", "Omega Weapon Container [Grade 2]");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Omega_G3, "CyberscapeItems.Strongbox.Container.Omega_G3", "Omega Weapon Container [Grade 3]");
+
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Premium_Omega, "CyberscapeItems.Strongbox.Container.Premium_Omega", "Premium Omega Weapon Container");
+	    }
+
+	    namespace Case
+	    {
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Standard, "CyberscapeItems.Strongbox.Case.Standard", "Standard Attachment Case");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Rare, "CyberscapeItems.Strongbox.Case.Rare", "Rare Attachment Case");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Premium_Rare, "CyberscapeItems.Strongbox.Case.Premium_Rare", "Premium Rare Attachment Case");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Legendary, "CyberscapeItems.Strongbox.Case.Legendary", "Legendary Attachment Case");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Premium_Legendary, "CyberscapeItems.Strongbox.Case.Premium_Legendary", "Premium Legendary Attachment Case");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Omega, "CyberscapeItems.Strongbox.Case.Omega", "Omega Attachment Case");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Premium_Omega, "CyberscapeItems.Strongbox.Case.Premium_Omega", "Premium Omega Attachment Case");
+	    }
+
+	    namespace Vault
+	    {
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Standard, "CyberscapeItems.Strongbox.Vault.Standard", "Standard Vault");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Rare, "CyberscapeItems.Strongbox.Vault.Rare", "Rare Vault");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Premium_Rare, "CyberscapeItems.Strongbox.Vault.Premium_Rare", "Premium Rare Vault");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Legendary, "CyberscapeItems.Strongbox.Vault.Legendary", "Legendary Vault");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Premium_Legendary, "CyberscapeItems.Strongbox.Vault.Premium_Legendary", "Premium Legendary Vault");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Omega, "CyberscapeItems.Strongbox.Vault.Omega", "Omega Vault");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Premium_Omega, "CyberscapeItems.Strongbox.Vault.Premium_Omega", "Premium Omega Vault");
+	    }
+
+	    namespace Capsule
+	    {
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Standard, "CyberscapeItems.Strongbox.Capsule.Standard", "Standard Material Capsule");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Rare, "CyberscapeItems.Strongbox.Capsule.Rare", "Rare Material Capsule");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Premium_Rare, "CyberscapeItems.Strongbox.Capsule.Premium_Rare", "Premium Rare Material Capsule");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Legendary, "CyberscapeItems.Strongbox.Capsule.Legendary", "Legendary Material Capsule");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Premium_Legendary, "CyberscapeItems.Strongbox.Capsule.Premium_Legendary", "Premium Legendary Material Capsule");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Omega, "CyberscapeItems.Strongbox.Capsule.Omega", "Omega Material Capsule");
+	        UE_DEFINE_GAMEPLAY_TAG_COMMENT(Premium_Omega, "CyberscapeItems.Strongbox.Capsule.Premium_Omega", "Premium Omega Material Capsule");
+	    }
+	}
 }
