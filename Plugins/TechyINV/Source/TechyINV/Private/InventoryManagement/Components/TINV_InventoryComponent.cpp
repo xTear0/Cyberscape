@@ -60,6 +60,12 @@ void UTINV_InventoryComponent::TryAddItem(UTINV_ItemComponent* ItemComponent)
 	// TODO: Actually add the item to the inventory.
 }
 
+void UTINV_InventoryComponent::GridTrySwapWithHotbar(const int32 HotbarIndex)
+{
+	if (!bInventoryMenuOpen) return;
+	OnHotbarSwapRequested.Broadcast(HotbarIndex);
+}
+
 void UTINV_InventoryComponent::GridTryDropItem(const bool bDropAll)
 {
 	if (!bInventoryMenuOpen) return;
@@ -177,7 +183,7 @@ void UTINV_InventoryComponent::ConstructInventory()
 void UTINV_InventoryComponent::OpenInventoryMenu()
 {
 	if (!IsValid(InventoryMenu)) return;
-	InventoryMenu->SetVisibility(ESlateVisibility::Visible);
+	InventoryMenu->SetMenuOpen(true);
 	bInventoryMenuOpen = true;
 
 	if (!OwningController.IsValid()) return;
@@ -197,7 +203,7 @@ void UTINV_InventoryComponent::OpenInventoryMenu()
 void UTINV_InventoryComponent::CloseInventoryMenu(bool Quiet)
 {
 	if (!IsValid(InventoryMenu)) return;
-	InventoryMenu->SetVisibility(ESlateVisibility::Collapsed);
+	InventoryMenu->SetMenuOpen(false, /*bInstant*/ Quiet);
 	bInventoryMenuOpen = false;
 
 	if (!OwningController.IsValid()) return;

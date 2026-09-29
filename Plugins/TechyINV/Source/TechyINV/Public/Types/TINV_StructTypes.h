@@ -21,7 +21,10 @@ struct FTINV_SlotAvailability
 	
 	int32 Index{INDEX_NONE};
 	int32 AmountToFill{0};
-	bool bItemAtIndex{false}; 
+	bool bItemAtIndex{false};
+
+	// Which grid this slot belongs to. Each grid only applies its own entries.
+	TWeakObjectPtr<const UTINV_InventoryGrid> Grid;
 };
 
 

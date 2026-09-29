@@ -38,17 +38,43 @@ public:
 	virtual void NativeOnInitialized() override;
 
 	FTINV_SlotAvailabilityResult HasRoomForItem(const UTINV_ItemComponent* ItemComponent);
-
-	UFUNCTION()
-	void AddItem(UTINV_InventoryItem* Item);
+	
 	void DropHoverItem(); // Was DropItem. For dropping what's held (e.g. clicking outside the grid).
 	void CancelDrag();
+	
+	TSubclassOf<UTINV_HoverItem> GetHoverItemClass() const { return HoverItemClass; }
+	UTINV_ItemDataTable* GetItemDataTable() const { return ItemDataTable; }
+	float GetTileSize() const { return TileSize; }
 
+	// Runs both room passes across Grids in priority order and returns one combined result.
+	static FTINV_SlotAvailabilityResult HasRoomAcrossGrids(const TArray<const UTINV_InventoryGrid*>& Grids,
+		const FTINV_ItemManifest& Manifest, int32 StackAmount);
+
+	// Places only the entries of Result that belong to this grid.
+	void ApplySlotAvailabilities(const FTINV_SlotAvailabilityResult& Result);
+
+	void PostPickupNotification(const FTINV_SlotAvailabilityResult& Result, const FTINV_ItemManifest& Manifest) const;
+
+	int32 PreviewDragSlot(int32 Index, int32 Share);   // Updates the preview; returns the amount that fits.
+	int32 GetDragAmount(int32 Index, int32 Share) const;
+	void CommitDragSlot(int32 Index, UTINV_InventoryItem* Item, int32 Amount);
+	void ClearDragState();
+
+	int32 GetHoveredIndex() const { return HoveredIndex; }
+	bool IsValidSlot(int32 Index) const { return GridSlots.IsValidIndex(Index); }
+	UTINV_InventoryItem* GetSlotItem(int32 Index) const;
+	int32 GetSlotCount(int32 Index) const;
+	void ClearSlot(int32 Index);
+	void SetSlotContents(int32 Index, UTINV_InventoryItem* Item, int32 Count);
+	void RefreshHighlight(int32 Index);
+	void ResetHover();
+	
 protected:
 	virtual FReply NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 	virtual FReply NativeOnMouseWheel(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 	
 private:
+	
 	/* Data */
 	UPROPERTY(EditDefaultsOnly, Category = "TECHY|Inventory")
 	TObjectPtr<UTINV_ItemDataTable> ItemDataTable;
@@ -56,8 +82,11 @@ private:
 	TWeakObjectPtr<UTINV_InventoryComponent> InventoryComponent;
 
 	/* Room checks */
-	FTINV_SlotAvailabilityResult HasRoomForItem(const UTINV_InventoryItem* Item);
 	FTINV_SlotAvailabilityResult HasRoomForItem(const FTINV_ItemManifest& Manifest, const int32 StackAmount = 1);
+	void FindRoomInExistingStacks(const FGameplayTag& ItemID, int32 MaxStackSize,
+		FTINV_SlotAvailabilityResult& Result, int32& AmountToFill) const;
+	void FindRoomInEmptySlots(int32 MaxStackSize,
+		FTINV_SlotAvailabilityResult& Result, int32& AmountToFill) const;
 	const FTINV_ItemDataDefinition* GetItemData(const FTINV_ItemManifest& ItemManifest) const;
 	bool IsSlotEmpty(const UTINV_GridSlot* GridSlot) const;
 	bool IsSameItem(const UTINV_GridSlot* GridSlot, const FGameplayTag& ItemID) const;
@@ -67,7 +96,6 @@ private:
 		const int32 FillAmount, const bool bItemAtIndex, int32& AmountToFill) const;
 
 	/* Placing items */
-	void AddItemToIndices(const FTINV_SlotAvailabilityResult& Result, UTINV_InventoryItem* NewItem);
 	void AddItemAtIndex(UTINV_InventoryItem* Item, const int32 Index, const bool bStackable, const int32 StackAmount);
 	UTINV_SlottedItem* CreateSlottedItem(UTINV_InventoryItem* Item, int32 Index, bool bStackable, int32 StackAmount) const;
 	void AddSlottedItemToCanvas(const int32 Index, UTINV_SlottedItem* SlottedItem) const;
@@ -89,17 +117,6 @@ private:
 	/* Double-click to collect */
 	void CollectMatchingStacks();
 	TArray<int32> GetMatchingStackIndices(const FGameplayTag& ItemID) const;
-
-	/* Left-click drag distribute */
-	bool CanStartDrag(int32 Index, const FPointerEvent& MouseEvent) const;
-	bool CanAddToDrag(int32 Index) const;
-	void BeginDrag(int32 Index);
-	void AddDragSlot(int32 Index);
-	void AddDragPath(int32 FromIndex, int32 ToIndex);
-	bool IsDragTarget(int32 Index) const;
-	int32 GetDragAmount(int32 Index, int32 Share) const;
-	UTINV_SlottedItem* GetDragDisplay(int32 Index) const;
-	TMap<int32, int32> DragBaseCounts;
 	
 	/* Scroll-wheel collect and distribute */
 	bool CanScrollPlace(int32 Index) const;
@@ -108,20 +125,6 @@ private:
 	void ScrollTakeOne(int32 Index);
 
 	float ScrollAccumulator = 0.f;
-
-	void UpdateDragPreview();
-	void CommitDrag();
-	void ClearDragState();
-
-	bool bIsDragging = false;
-	int32 DragSourceCount = 0;
-	TArray<int32> DragIndices;
-
-	UPROPERTY()
-	TMap<int32, TObjectPtr<UTINV_SlottedItem>> DragPreviews;
-	
-	UFUNCTION()
-	void AddStacks(const FTINV_SlotAvailabilityResult& Result);
 
 	/* Grid slot input */
 	UFUNCTION()
@@ -140,28 +143,47 @@ private:
 
 	/* Hover item */
 	void PickUp(UTINV_InventoryItem* ClickedInventoryItem, const int32 GridIndex);
-	void AssignHoverItem(UTINV_InventoryItem* InventoryItem);
 	void AssignHoverItem(UTINV_InventoryItem* InventoryItem, const int32 GridIndex, const int32 PreviousGridIndex);
 	void ClearHoverItem();
 	ETINV_DropAction GetDropAction(int32 Index) const;
-	void RefreshHighlight(int32 Index);
 	void PutDownOnIndex(int32 Index);
 	void MergeStacks(int32 Index);
 	void SwapWithHoverItem(int32 Index);
 	void RefreshCursor() const;
 
+	/* Held item: shared across every grid through UTINV_HeldItemSubsystem */
+	class UTINV_HeldItemSubsystem* GetHeld() const;
+	bool IsHolding() const;
+	UTINV_InventoryItem* GetHeldItem() const;
+	int32 GetHeldCount() const;
+	void SetHeldCount(int32 NewCount);
+	void OnHeldItemChanged();
+
 	void ConstructGrid();
-	void PostPickupNotification(const FTINV_SlotAvailabilityResult& Result, const FTINV_ItemManifest& Manifest) const;
 
 	/* State */
 	UPROPERTY()
 	TArray<TObjectPtr<UTINV_GridSlot>> GridSlots;
 
-	UPROPERTY()
-	TMap<int32, TObjectPtr<UTINV_SlottedItem>> SlottedItems;
+	/* Left-click drag distribute (session lives in UTINV_HeldItemSubsystem) */
+	bool CanStartDrag(int32 Index, const FPointerEvent& MouseEvent) const;
+	bool CanAddToDrag(int32 Index) const;
+	void BeginDrag(int32 Index);
+	void AddDragSlot(int32 Index);
+	void AddDragPath(int32 FromIndex, int32 ToIndex);
+	bool IsDragTarget(int32 Index) const;
+	UTINV_SlottedItem* GetDragDisplay(int32 Index) const;
+	bool IsDragging() const;
+
+	// This grid's share of the drag visuals only.
+	TArray<int32> DragIndices;
+	TMap<int32, int32> DragBaseCounts;
 
 	UPROPERTY()
-	TObjectPtr<UTINV_HoverItem> HoverItem;
+	TMap<int32, TObjectPtr<UTINV_SlottedItem>> DragPreviews;
+	
+	UPROPERTY()
+	TMap<int32, TObjectPtr<UTINV_SlottedItem>> SlottedItems;
 
 	int32 HoveredIndex = INDEX_NONE;
 	int32 LastDragIndex = INDEX_NONE;

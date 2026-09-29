@@ -84,6 +84,19 @@ void AOperatorPlayerController::SetupInputComponent()
 	OperatorInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AOperatorPlayerController::Input_Jump);
 	OperatorInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AOperatorPlayerController::Input_Crouch);
 	OperatorInputComponent->BindAction(ItemDropAction, ETriggerEvent::Started, this, &AOperatorPlayerController::Input_DropItem);
+	OperatorInputComponent->BindAction(HotbarSlotAction, ETriggerEvent::Started, this, &AOperatorPlayerController::Input_HotbarSlot);
+}
+
+void AOperatorPlayerController::Input_HotbarSlot(const FInputActionValue& Value)
+{
+	const int32 SlotIndex = FMath::RoundToInt(Value.Get<float>()) - 1; // Key "1" scales to 1 -> index 0.
+	if (SlotIndex < 0 || !InventoryComponent.IsValid()) return;
+
+	if (IsInventoryOpen())
+	{
+		InventoryComponent->GridTrySwapWithHotbar(SlotIndex);
+	}
+	// else: select the hotbar slot during gameplay (later).
 }
 
 void AOperatorPlayerController::OnPossess(APawn* InPawn)

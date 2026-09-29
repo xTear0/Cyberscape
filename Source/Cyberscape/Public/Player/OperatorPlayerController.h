@@ -82,13 +82,17 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
 	TObjectPtr<UInputAction> CrouchAction;
-
+	
+	UPROPERTY(EditAnywhere, Category = "CYBERSCAPE|Input")
+	TObjectPtr<UInputAction> HotbarSlotAction;
+	
 	void Input_PrimaryInteract();
 	void Input_Crouch();
 	void Input_Jump();
 	void Input_Move(const FInputActionValue& Value);
 	void Input_Look(const FInputActionValue& Value);
 	void Input_DropItem();
+	void Input_HotbarSlot(const FInputActionValue& Value);
 	
 	void CreateHUDWidget();
 	void TraceForItem();

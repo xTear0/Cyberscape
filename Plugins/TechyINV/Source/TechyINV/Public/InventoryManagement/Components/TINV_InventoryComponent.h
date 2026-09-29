@@ -10,7 +10,7 @@
 /*-------------------------------------------------------------------------*/
 
 
-class UTINV_ItemDataTable;
+
 /*-------------------------------------------------------------------------*/
 /*   Declarations                                                          */
 /*-------------------------------------------------------------------------*/
@@ -18,11 +18,12 @@ class UTINV_InventoryItem;
 class UTINV_InventoryBase;
 class UTINV_ItemComponent;
 struct FTINV_SlotAvailabilityResult;
-
+class UTINV_ItemDataTable;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTINVItemChange, UTINV_InventoryItem*, Item);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTINVNoRoomInInventory);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTINV_StackChange, const FTINV_SlotAvailabilityResult&, Result);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTINV_DropRequest, bool, bDropAll);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTINV_HotbarSwapRequest, int32, HotbarIndex);
 /*-------------------------------------------------------------------------*/
 
 
@@ -36,6 +37,10 @@ class TECHYINV_API UTINV_InventoryComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+
+	UFUNCTION(BlueprintCallable, Category="TECHY|Inventory")
+	void CloseInventoryMenu(bool Quiet = false);
+	
 	UTINV_InventoryComponent();
 
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
@@ -65,6 +70,9 @@ public:
 	FTINVNoRoomInInventory NoRoomInInventory;
 	FTINV_StackChange OnStackChange;
 	FTINV_DropRequest OnDropRequested;
+
+	void GridTrySwapWithHotbar(int32 HotbarIndex);
+	FTINV_HotbarSwapRequest OnHotbarSwapRequested;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -94,7 +102,7 @@ private:
 
 	bool bInventoryMenuOpen;
 	void OpenInventoryMenu();
-	void CloseInventoryMenu(bool Quiet = false);
+
 	void SpawnDroppedItem(UTINV_InventoryItem* Item, int32 StackCount);
 	const FTINV_ItemDataDefinition* GetItemData(const FTINV_ItemManifest& Manifest) const;
 
